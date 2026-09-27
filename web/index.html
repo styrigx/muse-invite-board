@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Muse 邀请码共享站</title>
+<link rel="dns-prefetch" href="https://muse-invite-board.styrigx.workers.dev">
+<link rel="preconnect" href="https://muse-invite-board.styrigx.workers.dev">
 <style>
 :root{
   --bg:#070b16; --card:rgba(255,255,255,.045); --line:rgba(255,255,255,.09);
@@ -159,7 +161,7 @@ async function load(){
 }
 async function vote(code,kind,btn){
  btn.disabled=true;
- const r=await fetch(API+'/api/vote',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code,kind})});
+ const r=await fetch(API+'/api/vote',{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({code,kind})});
  const d=await r.json();
  if(!r.ok)toast(d.error||'操作失败');else{toast(kind==='works'?'感谢反馈！':'已标记，谢谢');load()}
 }
@@ -172,7 +174,7 @@ $('copyDrawBtn').onclick=()=>{const c=$('drawCode').textContent;if(/^[A-Z0-9]{6}
 $('submitBtn').onclick=async()=>{
  const code=$('codeInput').value.trim().toUpperCase();
  if(!/^[A-Z0-9]{6}$/.test(code)){toast('格式不对，应为6位字母/数字');return}
- const r=await fetch(API+'/api/submit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code})});
+ const r=await fetch(API+'/api/submit',{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({code})});
  const d=await r.json();
  if(!r.ok)toast(d.error||'提交失败');else{toast('贡献成功，感谢！');$('codeInput').value='';load()}
 };
