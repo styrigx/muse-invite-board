@@ -4,6 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Muse 邀请码共享站</title>
+<meta name="description" content="拿一个码，留一个码。Muse 邀请码免费共享：加权轮换抽码、网友互助、失效自动暂停。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Muse 邀请码共享站">
+<meta property="og:description" content="拿一个码，留一个码。免费领 Muse 邀请码，网友互助，失效自动隐藏。">
+<meta property="og:image" content="https://muse-invite-board.vercel.app/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Muse 邀请码共享站">
+<meta name="twitter:description" content="拿一个码，留一个码。免费领 Muse 邀请码，网友互助。">
+<meta name="twitter:image" content="https://muse-invite-board.vercel.app/og-image.png">
 <link rel="dns-prefetch" href="https://muse-invite-board.styrigx.workers.dev">
 <link rel="preconnect" href="https://muse-invite-board.styrigx.workers.dev">
 <style>
@@ -29,10 +38,28 @@ nav{display:flex;align-items:center;padding:20px 2px}
 .hero h1{font-size:34px;font-weight:800;letter-spacing:2px;
   background:linear-gradient(120deg,#fff 20%,#c7d2fe 60%,var(--acc2));-webkit-background-clip:text;background-clip:text;color:transparent}
 .hero p{color:var(--dim);font-size:14px;margin-top:12px;line-height:1.9}
+.hero .slogan{color:#e8c15a;font-size:16px;font-weight:700;letter-spacing:4px;margin-top:14px}
 .stats{display:flex;gap:12px;margin:26px 0}
 .stat{flex:1;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 8px;text-align:center;backdrop-filter:blur(8px)}
 .stat b{font-size:24px;display:block;background:linear-gradient(120deg,var(--acc),var(--acc2));-webkit-background-clip:text;background-clip:text;color:transparent}
 .stat small{color:var(--dim);font-size:12px}
+.steps{display:flex;gap:10px;margin:2px 0 22px}
+.step{flex:1;text-align:center;font-size:12px;color:var(--dim);line-height:1.8;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 6px}
+.step .n{display:flex;align-items:center;justify-content:center;width:26px;height:26px;margin:0 auto 8px;border-radius:50%;background:linear-gradient(120deg,var(--acc),var(--acc2));color:#0b0620;font-size:13px;font-weight:800}
+.fresh{display:flex;gap:10px;overflow-x:auto;padding:2px 2px 8px;-webkit-overflow-scrolling:touch}
+.fresh::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;text-align:center;cursor:pointer}
+.chip .c{font-family:ui-monospace,Menlo,monospace;font-weight:800;letter-spacing:2px;font-size:15px}
+.chip .b{font-size:11px;color:var(--dim);margin-top:4px}
+.faq details{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:10px;overflow:hidden}
+.faq summary{padding:15px 18px;font-size:14px;font-weight:700;cursor:pointer;list-style:none}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";float:right;color:var(--acc);font-weight:800}
+.faq details[open] summary::after{content:"–"}
+.faq .a{padding:0 18px 16px;font-size:13px;color:var(--dim);line-height:1.9}
+.faq .a b{color:#c7d2fe}
+.paused-badge{display:inline-block;font-size:11px;font-weight:700;color:#fbbf24;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.35);border-radius:99px;padding:2px 10px;margin-left:8px;vertical-align:middle}
+.draw-tip{text-align:center;color:var(--dim);font-size:12px;margin-top:12px}
 .owner{margin:6px 0 22px;padding:20px;border-radius:18px;position:relative;overflow:hidden;
   background:linear-gradient(135deg,rgba(232,193,90,.14),rgba(232,193,90,.04));
   border:1px solid rgba(232,193,90,.45)}
@@ -96,6 +123,7 @@ footer a{color:var(--acc);text-decoration:none}
 
   <div class="hero">
     <h1>邀请码共享站</h1>
+    <p class="slogan">拿一个码，留一个码。</p>
     <p>Muse 注册需要邀请码<br>这里<b style="color:#c7d2fe">免费领码</b> · 网友互助 · 失效自动隐藏</p>
   </div>
 
@@ -103,6 +131,12 @@ footer a{color:var(--acc);text-decoration:none}
     <div class="stat"><b id="stCodes">–</b><small>码池邀请码</small></div>
     <div class="stat"><b id="stDraws">–</b><small>累计抽取</small></div>
     <div class="stat"><b id="stWorks">–</b><small>人说能用 👍</small></div>
+  </div>
+
+  <div class="steps">
+    <div class="step"><span class="n">1</span>抽一个码<br>或复制站长的码</div>
+    <div class="step"><span class="n">2</span>去 Muse App<br>设置里兑换注册</div>
+    <div class="step"><span class="n">3</span>回来点 👍<br>或标记失效</div>
   </div>
 
   <div class="owner">
@@ -118,7 +152,11 @@ footer a{color:var(--acc);text-decoration:none}
       <button class="btn" id="drawBtn">🎲 抽一个邀请码</button>
       <button class="btn-ghost" id="copyDrawBtn">复制</button>
     </div>
+    <div class="draw-tip">加权轮换发放：被抽得少的码优先，新贡献的码不会被瞬间领爆</div>
   </div>
+
+  <div class="sec-t">🆕 最新分享</div>
+  <div class="fresh" id="fresh"><div class="empty">加载中…</div></div>
 
   <div class="sec-t">📋 网友分享的码</div>
   <div class="codes" id="list"><div class="empty">加载中…</div></div>
@@ -129,8 +167,37 @@ footer a{color:var(--acc);text-decoration:none}
     <button class="btn" id="submitBtn">提交</button>
   </div>
 
+  <div class="sec-t">❓ 常见问题</div>
+  <div class="faq">
+    <details>
+      <summary>领到的码有什么用？</summary>
+      <div class="a">在 <b>Muse App（或网页版）的设置里兑换邀请码</b>，完成注册。注意要在注册后 <b>48 小时内</b>兑换，过期就用不了了。</div>
+    </details>
+    <details>
+      <summary>抽码是什么机制？</summary>
+      <div class="a">不是纯随机。<b>每个码被抽走的次数会被记录，被抽得少的码优先被抽到</b>——新贡献的码不会被瞬间领爆，老码也不会沉底。</div>
+    </details>
+    <details>
+      <summary>为什么码显示用不了？</summary>
+      <div class="a">每个邀请码只能被使用有限次（一般 <b>20–30 次</b>）。如果用不了，点下面的「标记失效」，它会立刻暂停发放，换个码再试。</div>
+    </details>
+    <details>
+      <summary>标记失效后会怎样？</summary>
+      <div class="a"><b>1 次标记就暂停发放</b>，不再进入抽取池；累计 <b>3 次标记会被自动隐藏</b>。如果是误标，点「👍 能用」可以恢复发放。</div>
+    </details>
+    <details>
+      <summary>这个站是官方的吗？</summary>
+      <div class="a">不是。这是网友自发维护的独立小站，<b>不收集你的 Muse 或任何账号登录信息</b>，所有码免费，也别为邀请码花钱。</div>
+    </details>
+    <details>
+      <summary>我贡献的码也会被分享吗？</summary>
+      <div class="a">会。你提交的码会立刻进入轮换池——<b>拿一个码，留一个码</b>，池子就是这样转起来的。</div>
+    </details>
+  </div>
+
   <footer>
     由 Cloudflare 强力驱动<br>
+    标记 1 次即暂停发放 · 3 次标记自动隐藏<br>
     站长 <a href="https://x.com/styrigx" target="_blank" rel="noopener">@styrigx</a> · 随缘更新
   </footer>
 </div>
@@ -151,19 +218,25 @@ async function load(){
  if(!cs.length){box.innerHTML='<div class="empty">板子还是空的<br>来贡献第一个吧 👆</div>';return}
  box.innerHTML=cs.map(c=>
  `<div class="code-card">
-   <div class="row1"><span class="c">${c.code}</span><button class="mini" onclick="copy('${c.code}')">复制</button></div>
+   <div class="row1"><span class="c">${c.code}${c.paused?'<span class="paused-badge">⏸ 暂停发放</span>':''}</span><button class="mini" onclick="copy('${c.code}')">复制</button></div>
    <div class="meta">${c.by} · 👍 <b>${c.works}</b>人说能用 · 已抽${c.draws}次 · <span class="fl">${c.flags}</span>人标记</div>
    <div class="vote">
      <button class="w" onclick="vote('${c.code}','works',this)">👍 能用</button>
      <button class="f" onclick="vote('${c.code}','flag',this)">标记失效</button>
    </div>
  </div>`).join('');
+ const fresh=[...cs].sort((a,b)=>(b.ts||0)-(a.ts||0)).slice(0,8);
+ $('fresh').innerHTML=fresh.map(c=>
+ `<div class="chip" onclick="copy('${c.code}')"><div class="c">${c.code}</div><div class="b">${c.by}</div></div>`).join('');
 }
 async function vote(code,kind,btn){
  btn.disabled=true;
  const r=await fetch(API+'/api/vote',{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({code,kind})});
  const d=await r.json();
- if(!r.ok)toast(d.error||'操作失败');else{toast(kind==='works'?'感谢反馈！':'已标记，谢谢');load()}
+ if(!r.ok)toast(d.error||'操作失败');
+ else if(kind==='works')toast(d.unpaused?'感谢！该码已恢复发放':'感谢反馈！');
+ else toast('已标记失效，该码暂停发放');
+ load();
 }
 $('drawBtn').onclick=async()=>{
  const r=await fetch(API+'/api/draw',{method:'POST'});const d=await r.json();
