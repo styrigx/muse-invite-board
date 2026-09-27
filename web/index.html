@@ -4,14 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Muse 邀请码共享站</title>
-<meta name="description" content="拿一个码，留一个码。Muse 邀请码免费共享：加权轮换抽码、网友互助、失效自动暂停。">
+<meta name="description" content="拿一个码，留一个码。一个邀请码兑换 10 亿 Muse token：免费领码、加权轮换、网友互助。">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Muse 邀请码共享站">
-<meta property="og:description" content="拿一个码，留一个码。免费领 Muse 邀请码，网友互助，失效自动隐藏。">
+<meta property="og:description" content="拿一个码，留一个码。一个邀请码 = 10 亿 Muse token，免费领码，网友互助。">
 <meta property="og:image" content="https://muse-invite-board.vercel.app/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Muse 邀请码共享站">
-<meta name="twitter:description" content="拿一个码，留一个码。免费领 Muse 邀请码，网友互助。">
+<meta name="twitter:description" content="拿一个码，留一个码。一个邀请码 = 10 亿 Muse token，免费领码。">
 <meta name="twitter:image" content="https://muse-invite-board.vercel.app/og-image.png">
 <link rel="dns-prefetch" href="https://muse-invite-board.styrigx.workers.dev">
 <link rel="preconnect" href="https://muse-invite-board.styrigx.workers.dev">
@@ -124,7 +124,7 @@ footer a{color:var(--acc);text-decoration:none}
   <div class="hero">
     <h1>邀请码共享站</h1>
     <p class="slogan">拿一个码，留一个码。</p>
-    <p>Muse 注册需要邀请码<br>这里<b style="color:#c7d2fe">免费领码</b> · 网友互助 · 失效自动隐藏</p>
+    <p>一个邀请码 = <b style="color:#c7d2fe">10 亿 Muse token</b>，免费领<br>专治码不好找、找到的已失效；自己的码没地方分享</p>
   </div>
 
   <div class="stats">
@@ -135,7 +135,7 @@ footer a{color:var(--acc);text-decoration:none}
 
   <div class="steps">
     <div class="step"><span class="n">1</span>抽一个码<br>或复制站长的码</div>
-    <div class="step"><span class="n">2</span>去 Muse App<br>设置里兑换注册</div>
+    <div class="step"><span class="n">2</span>去 Muse App<br>设置里兑换拿 token</div>
     <div class="step"><span class="n">3</span>回来点 👍<br>或标记失效</div>
   </div>
 
@@ -152,14 +152,11 @@ footer a{color:var(--acc);text-decoration:none}
       <button class="btn" id="drawBtn">🎲 抽一个邀请码</button>
       <button class="btn-ghost" id="copyDrawBtn">复制</button>
     </div>
-    <div class="draw-tip">加权轮换发放：被抽得少的码优先，新贡献的码不会被瞬间领爆</div>
+    <div class="draw-tip">抽到自动复制🎲 加权轮换：被抽得少的码优先，新码不会被瞬间领爆</div>
   </div>
 
   <div class="sec-t">🆕 最新分享</div>
   <div class="fresh" id="fresh"><div class="empty">加载中…</div></div>
-
-  <div class="sec-t">📋 网友分享的码</div>
-  <div class="codes" id="list"><div class="empty">加载中…</div></div>
 
   <div class="sec-t">💝 分享你的邀请码</div>
   <div class="share">
@@ -167,11 +164,14 @@ footer a{color:var(--acc);text-decoration:none}
     <button class="btn" id="submitBtn">提交</button>
   </div>
 
+  <div class="sec-t">📋 网友分享的码</div>
+  <div class="codes" id="list"><div class="empty">加载中…</div></div>
+
   <div class="sec-t">❓ 常见问题</div>
   <div class="faq">
     <details>
       <summary>领到的码有什么用？</summary>
-      <div class="a">在 <b>Muse App（或网页版）的设置里兑换邀请码</b>，完成注册。注意要在注册后 <b>48 小时内</b>兑换，过期就用不了了。</div>
+      <div class="a">一个邀请码可以兑换 <b>10 亿 Muse token</b>。在 <b>Muse App（或网页版）的设置里兑换</b>，注册后 <b>48 小时内</b>有效，过期就兑不了了。</div>
     </details>
     <details>
       <summary>抽码是什么机制？</summary>
