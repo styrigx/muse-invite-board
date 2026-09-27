@@ -1,0 +1,38 @@
+name: 每日清理与备份
+
+on:
+  schedule:
+    - cron: "0 18 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 备份 codes 表
+        run: |
+          curl -s "${{ secrets.SUPABASE_URL }}/rest/v1/codes?select=*" \
+            -H "apikey: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
+            -o "backups/codes-$(date +%F).json"
+          echo "备份完成，行数: $(jq length "backups/codes-$(date +%F).json")"
+
+      - name: 清理被标记 3 次的失效码
+        run: |
+          curl -s -o /dev/null -w "HTTP %{http_code}\n" -X DELETE \
+            "${{ secrets.SUPABASE_URL }}/rest/v1/codes?flags=gte.3" \
+            -H "apikey: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}"
+
+      - name: 提交备份到仓库
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add backups/
+          git diff --cached --quiet || git commit -m "每日备份 $(date +%F)"
+          git push
