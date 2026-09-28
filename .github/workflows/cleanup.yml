@@ -2,11 +2,11 @@ name: 每日清理与备份
 
 on:
   schedule:
-    - cron: "0 18 * * *"
-  workflow_dispatch: {}
+    - cron: "0 18 * * *"   # 北京时间每天凌晨 2 点
+  workflow_dispatch: {}      # 允许在 Actions 页面手动触发
 
 permissions:
-  contents: write
+  contents: write            # 允许提交备份文件回仓库
 
 jobs:
   cleanup:
@@ -22,10 +22,10 @@ jobs:
             -o "backups/codes-$(date +%F).json"
           echo "备份完成，行数: $(jq length "backups/codes-$(date +%F).json")"
 
-      - name: 清理被标记 3 次的失效码
+      - name: 清理被标记 3 次的失效码（跳过站长码 J93R39）
         run: |
           curl -s -o /dev/null -w "HTTP %{http_code}\n" -X DELETE \
-            "${{ secrets.SUPABASE_URL }}/rest/v1/codes?flags=gte.3" \
+            "${{ secrets.SUPABASE_URL }}/rest/v1/codes?flags=gte.3&code=neq.J93R39" \
             -H "apikey: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
             -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}"
 
