@@ -60,17 +60,6 @@ nav{display:flex;align-items:center;padding:20px 2px}
 .faq .a b{color:#c7d2fe}
 .paused-badge{display:inline-block;font-size:11px;font-weight:700;color:#fbbf24;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.35);border-radius:99px;padding:2px 10px;margin-left:8px;vertical-align:middle}
 .draw-tip{text-align:center;color:var(--dim);font-size:12px;margin-top:12px}
-.owner{margin:6px 0 22px;padding:20px;border-radius:18px;position:relative;overflow:hidden;
-  background:linear-gradient(135deg,rgba(232,193,90,.14),rgba(232,193,90,.04));
-  border:1px solid rgba(232,193,90,.45)}
-.owner::before{content:"";position:absolute;inset:0;
-  background:linear-gradient(110deg,transparent 30%,rgba(232,193,90,.12) 50%,transparent 70%);animation:sheen 4s linear infinite}
-@keyframes sheen{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
-.owner .tag{display:inline-block;font-size:12px;font-weight:700;color:#3a2c07;background:linear-gradient(120deg,#f6d97b,#e8c15a);
-  padding:4px 12px;border-radius:99px;margin-bottom:12px}
-.owner .code{font-size:34px;font-weight:800;letter-spacing:8px;color:#f6d97b;font-family:ui-monospace,Menlo,monospace;cursor:pointer}
-.owner .who{color:var(--dim);font-size:13px;margin-top:8px}
-.owner .tip{color:#9a8656;font-size:12px;margin-top:6px}
 .drawbox{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:26px 20px;text-align:center;margin-bottom:22px;backdrop-filter:blur(8px)}
 .draw-code{font-size:46px;font-weight:800;letter-spacing:10px;min-height:66px;font-family:ui-monospace,Menlo,monospace;
   background:linear-gradient(120deg,#fff,var(--acc2));-webkit-background-clip:text;background-clip:text;color:transparent}
@@ -134,16 +123,9 @@ footer a{color:var(--acc);text-decoration:none}
   </div>
 
   <div class="steps">
-    <div class="step"><span class="n">1</span>抽一个码<br>或复制站长的码</div>
+    <div class="step"><span class="n">1</span>抽一个码<br>免费领</div>
     <div class="step"><span class="n">2</span>去 Muse App<br>设置里兑换拿 token</div>
     <div class="step"><span class="n">3</span>回来点 👍<br>或标记失效</div>
-  </div>
-
-  <div class="owner">
-    <span class="tag">⭐ 站长分享</span>
-    <div class="code" onclick="copy('J93R39')">J93R39</div>
-    <div class="who">来自站长 @styrigx，亲测可用（点击可复制）</div>
-    <div class="tip">站长码长期有效 · 不参与随机抽取 · 点下面按钮抽网友分享的码</div>
   </div>
 
   <div class="drawbox">
@@ -217,7 +199,7 @@ async function load(){
  $('stWorks').textContent=cs.reduce((s,c)=>s+(c.works||0),0);
  if(!cs.length){box.innerHTML='<div class="empty">板子还是空的<br>来贡献第一个吧 👆</div>';return}
  box.innerHTML=cs.map(c=>
- `<div class="code-card">
+ `<div class="code-card" data-code="${c.code}" data-works="${c.works||0}" data-flags="${c.flags||0}">
    <div class="row1"><span class="c">${c.code}${c.paused?'<span class="paused-badge">⏸ 暂停发放</span>':''}</span><button class="mini" onclick="copy('${c.code}')">复制</button></div>
    <div class="meta">${c.by} · 👍 <b>${c.works}</b>人说能用 · 已抽${c.draws}次 · <span class="fl">${c.flags}</span>人标记</div>
    <div class="vote">
@@ -225,6 +207,7 @@ async function load(){
      <button class="f" onclick="vote('${c.code}','flag',this)">标记失效</button>
    </div>
  </div>`).join('');
+ // 最新分享：按提交时间取最新 8 条
  const fresh=[...cs].sort((a,b)=>(b.ts||0)-(a.ts||0)).slice(0,8);
  $('fresh').innerHTML=fresh.map(c=>
  `<div class="chip" onclick="copy('${c.code}')"><div class="c">${c.code}</div><div class="b">${c.by}</div></div>`).join('');
@@ -233,10 +216,25 @@ async function vote(code,kind,btn){
  btn.disabled=true;
  const r=await fetch(API+'/api/vote',{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({code,kind})});
  const d=await r.json();
- if(!r.ok)toast(d.error||'操作失败');
- else if(kind==='works')toast(d.unpaused?'感谢！该码已恢复发放':'感谢反馈！');
- else toast('已标记失效，该码暂停发放');
- load();
+ btn.disabled=false;
+ if(!r.ok){toast(d.error||'操作失败');return}
+ if(kind==='works')toast(d.unpaused?'感谢！该码已恢复发放':'感谢反馈！');
+ else toast(d.ignored?'已收到反馈':'已标记失效，该码暂停发放');
+ if(d.ignored)return;
+ // 原地更新这张卡片：不整列重排，页面不跳动
+ const card=document.querySelector('.code-card[data-code="'+code+'"]');
+ if(card){
+   const dw=(d.works||0)-(parseInt(card.dataset.works||'0',10));
+   card.dataset.works=d.works||0;card.dataset.flags=d.flags||0;
+   const b=card.querySelector('.meta b');if(b)b.textContent=d.works;
+   const fl=card.querySelector('.meta .fl');if(fl)fl.textContent=d.flags;
+   const paused=d.paused&&!d.unpaused;
+   const badge=card.querySelector('.paused-badge');
+   if(paused&&!badge){const t=card.querySelector('.row1 .c');if(t)t.insertAdjacentHTML('beforeend','<span class="paused-badge">⏸ 暂停发放</span>')}
+   if(!paused&&badge)badge.remove();
+   const sw=$('stWorks');
+   if(sw&&sw.textContent!=='–')sw.textContent=String(parseInt(sw.textContent,10)+dw);
+ }
 }
 $('drawBtn').onclick=async()=>{
  const r=await fetch(API+'/api/draw',{method:'POST'});const d=await r.json();
