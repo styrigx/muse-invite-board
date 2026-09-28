@@ -15,6 +15,7 @@
 <meta name="twitter:image" content="https://muse-invite-board.vercel.app/og-image.png">
 <link rel="dns-prefetch" href="https://muse-invite-board.styrigx.workers.dev">
 <link rel="preconnect" href="https://muse-invite-board.styrigx.workers.dev">
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <style>
 :root{
   --bg:#070b16; --card:rgba(255,255,255,.045); --line:rgba(255,255,255,.09);
@@ -74,6 +75,21 @@ nav{display:flex;align-items:center;padding:20px 2px}
 .btn-ghost:active{transform:scale(.96)}
 .sec-t{font-size:15px;font-weight:700;margin:26px 0 14px;display:flex;align-items:center;gap:8px}
 .sec-t::after{content:"";flex:1;height:1px;background:var(--line)}
+.upd{font-size:12px;color:var(--dim);font-weight:400;white-space:nowrap}
+.mq-hint{font-size:12px;color:var(--dim);margin:-6px 0 10px}
+.marquee{max-height:360px;overflow:hidden;position:relative;
+  -webkit-mask-image:linear-gradient(180deg,transparent,#000 24px,#000 calc(100% - 24px),transparent);
+  mask-image:linear-gradient(180deg,transparent,#000 24px,#000 calc(100% - 24px),transparent)}
+.marquee-track.run{animation-name:mqY;animation-timing-function:linear;animation-iteration-count:infinite}
+.marquee-track.paused{animation-play-state:paused}
+.marquee:hover .marquee-track{animation-play-state:paused}
+@keyframes mqY{to{transform:translateY(-50%)}}
+.marquee .code-card{padding:12px 14px}
+.paused-list{margin-top:12px;display:grid;gap:8px}
+.paused-row{display:flex;align-items:center;gap:10px;background:rgba(251,191,36,.06);
+  border:1px solid rgba(251,191,36,.25);border-radius:12px;padding:10px 14px}
+.paused-row .c{font-family:ui-monospace,Menlo,monospace;font-weight:800;letter-spacing:2px;font-size:15px}
+.paused-row .t{flex:1;color:var(--dim);font-size:12px}
 .codes{display:grid;gap:12px}
 .code-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;backdrop-filter:blur(8px)}
 .code-card .row1{display:flex;align-items:center;justify-content:space-between}
@@ -108,6 +124,7 @@ footer a{color:var(--acc);text-decoration:none}
 <div class="wrap">
   <nav>
     <div class="logo">🎟️ <span>Muse 邀请码</span></div>
+    <button class="mini" id="shareBtn" style="margin-left:auto">📤 分享</button>
   </nav>
 
   <div class="hero">
@@ -145,9 +162,12 @@ footer a{color:var(--acc);text-decoration:none}
     <input id="codeInput" maxlength="6" placeholder="输入6位邀请码" autocomplete="off">
     <button class="btn" id="submitBtn">提交</button>
   </div>
+  <div style="display:flex;justify-content:center;margin-top:12px"><div class="cf-turnstile" data-sitekey="0x4AAAAAAFF0szN9GPU7gxiw" data-theme="dark"></div></div>
 
-  <div class="sec-t">📋 网友分享的码</div>
-  <div class="codes" id="list"><div class="empty">加载中…</div></div>
+  <div class="sec-t">📋 网友分享的码<span class="upd" id="updTime"></span></div>
+  <div class="mq-hint">🎠 只展示 10 个 · 自动滚动中，按住可暂停点选</div>
+  <div class="marquee" id="codeMarquee"><div class="marquee-track" id="mqTrack"><div class="empty">加载中…</div></div></div>
+  <div class="paused-list" id="pausedBox"></div>
 
   <div class="sec-t">❓ 常见问题</div>
   <div class="faq">
@@ -190,24 +210,54 @@ const API="https://muse-invite-board.styrigx.workers.dev";
 const $=id=>document.getElementById(id);
 function toast(m){const t=$('toast');t.textContent=m;t.style.display='block';clearTimeout(t._h);t._h=setTimeout(()=>t.style.display='none',2200)}
 async function copy(t){try{await navigator.clipboard.writeText(t);toast('已复制：'+t)}catch{const i=document.createElement('input');i.value=t;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove();toast('已复制：'+t)}}
-async function load(){
- const r=await fetch(API+'/api/codes');const d=await r.json();
- const box=$('list');
- const cs=d.codes||[];
- $('stCodes').textContent=cs.length;
- $('stDraws').textContent=cs.reduce((s,c)=>s+(c.draws||0),0);
- $('stWorks').textContent=cs.reduce((s,c)=>s+(c.works||0),0);
- if(!cs.length){box.innerHTML='<div class="empty">板子还是空的<br>来贡献第一个吧 👆</div>';return}
- box.innerHTML=cs.map(c=>
- `<div class="code-card" data-code="${c.code}" data-works="${c.works||0}" data-flags="${c.flags||0}">
-   <div class="row1"><span class="c">${c.code}${c.paused?'<span class="paused-badge">⏸ 暂停发放</span>':''}</span><button class="mini" onclick="copy('${c.code}')">复制</button></div>
+async function copyRaw(t){try{await navigator.clipboard.writeText(t);return true}catch{try{const i=document.createElement('input');i.value=t;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove();return true}catch{return false}}}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const t=a[i];a[i]=a[j];a[j]=t}return a}
+function relTime(ts){
+ if(!ts)return'';
+ const m=Math.floor((Date.now()-ts)/60000);
+ if(m<1)return'刚刚更新';
+ if(m<60)return m+'分钟前更新';
+ const d=new Date(ts);
+ return (d.getMonth()+1)+'月'+d.getDate()+'日 '+d.getHours()+':'+String(d.getMinutes()).padStart(2,'0')+'更新';
+}
+function cardHTML(c){
+ return `<div class="code-card" data-code="${c.code}" data-works="${c.works||0}" data-flags="${c.flags||0}">
+   <div class="row1"><span class="c">${c.code}</span><button class="mini" onclick="copy('${c.code}')">复制</button></div>
    <div class="meta">${c.by} · 👍 <b>${c.works}</b>人说能用 · 已抽${c.draws}次 · <span class="fl">${c.flags}</span>人标记</div>
    <div class="vote">
      <button class="w" onclick="vote('${c.code}','works',this)">👍 能用</button>
      <button class="f" onclick="vote('${c.code}','flag',this)">标记失效</button>
    </div>
- </div>`).join('');
- // 最新分享：按提交时间取最新 8 条
+ </div>`;
+}
+async function load(){
+ const r=await fetch(API+'/api/codes');const d=await r.json();
+ const box=$('mqTrack'),mq=$('codeMarquee');
+ const cs=d.codes||[];
+ $('stCodes').textContent=cs.length;
+ $('stDraws').textContent=cs.reduce((s,c)=>s+(c.draws||0),0);
+ $('stWorks').textContent=cs.reduce((s,c)=>s+(c.works||0),0);
+ const maxts=cs.reduce((m,c)=>Math.max(m,c.ts||0),0);
+ $('updTime').textContent=maxts?' · '+relTime(maxts):'';
+ const active=cs.filter(c=>!c.paused);
+ box.classList.remove('run','paused');box.style.animationDuration='';
+ if(!cs.length){box.innerHTML='<div class="empty">板子还是空的<br>来贡献第一个吧 👆</div>'}
+ else{
+   box.innerHTML=shuffle([...active]).slice(0,10).map(cardHTML).join('')||'<div class="empty">码都被暂停了，等恢复吧</div>';
+   if(box.scrollHeight>mq.clientHeight+4){
+     box.innerHTML+=box.innerHTML;
+     box.style.animationDuration=Math.max(12,box.scrollHeight/2/45)+'s';
+     box.classList.add('run');
+     let rt=null;
+     const pause=()=>{box.classList.add('paused');clearTimeout(rt)};
+     const resume=()=>{clearTimeout(rt);rt=setTimeout(()=>box.classList.remove('paused'),2500)};
+     mq.ontouchstart=pause;mq.ontouchend=resume;mq.ontouchcancel=resume;
+     mq.onmouseenter=pause;mq.onmouseleave=resume;
+   }
+ }
+ const paused=cs.filter(c=>c.paused);
+ $('pausedBox').innerHTML=paused.map(c=>
+ `<div class="paused-row"><span class="c">${c.code}</span><span class="t">⏸ 被标记暂停发放 · 👍${c.works} / 🚩${c.flags}</span><button class="mini" onclick="vote('${c.code}','works',this)">👍 能用恢复</button></div>`).join('');
  const fresh=[...cs].sort((a,b)=>(b.ts||0)-(a.ts||0)).slice(0,8);
  $('fresh').innerHTML=fresh.map(c=>
  `<div class="chip" onclick="copy('${c.code}')"><div class="c">${c.code}</div><div class="b">${c.by}</div></div>`).join('');
@@ -221,20 +271,21 @@ async function vote(code,kind,btn){
  if(kind==='works')toast(d.unpaused?'感谢！该码已恢复发放':'感谢反馈！');
  else toast(d.ignored?'已收到反馈':'已标记失效，该码暂停发放');
  if(d.ignored)return;
- // 原地更新这张卡片：不整列重排，页面不跳动
- const card=document.querySelector('.code-card[data-code="'+code+'"]');
- if(card){
-   const dw=(d.works||0)-(parseInt(card.dataset.works||'0',10));
+ if(d.unpaused){load();return}
+ const cards=document.querySelectorAll('.code-card[data-code="'+code+'"]');
+ cards.forEach(card=>{
+   const prev=parseInt(card.dataset.works||'0',10);
    card.dataset.works=d.works||0;card.dataset.flags=d.flags||0;
    const b=card.querySelector('.meta b');if(b)b.textContent=d.works;
    const fl=card.querySelector('.meta .fl');if(fl)fl.textContent=d.flags;
-   const paused=d.paused&&!d.unpaused;
+   const paused=d.paused;
    const badge=card.querySelector('.paused-badge');
    if(paused&&!badge){const t=card.querySelector('.row1 .c');if(t)t.insertAdjacentHTML('beforeend','<span class="paused-badge">⏸ 暂停发放</span>')}
    if(!paused&&badge)badge.remove();
-   const sw=$('stWorks');
-   if(sw&&sw.textContent!=='–')sw.textContent=String(parseInt(sw.textContent,10)+dw);
- }
+   card._dw=(d.works||0)-prev;
+ });
+ const sw=$('stWorks');
+ if(sw&&sw.textContent!=='–'&&cards.length)sw.textContent=String(parseInt(sw.textContent,10)+(cards[0]._dw||0));
 }
 $('drawBtn').onclick=async()=>{
  const r=await fetch(API+'/api/draw',{method:'POST'});const d=await r.json();
@@ -245,9 +296,18 @@ $('copyDrawBtn').onclick=()=>{const c=$('drawCode').textContent;if(/^[A-Z0-9]{6}
 $('submitBtn').onclick=async()=>{
  const code=$('codeInput').value.trim().toUpperCase();
  if(!/^[A-Z0-9]{6}$/.test(code)){toast('格式不对，应为6位字母/数字');return}
- const r=await fetch(API+'/api/submit',{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({code})});
+ const token=(window.turnstile&&turnstile.getResponse())||'';
+ if(!token){toast('请先完成人机验证');return}
+ const r=await fetch(API+'/api/submit',{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({code,token})});
  const d=await r.json();
+ if(window.turnstile)turnstile.reset();
  if(!r.ok)toast(d.error||'提交失败');else{toast('贡献成功，感谢！');$('codeInput').value='';load()}
+};
+const SHARE_TEXT='🎟️ 搭了个 Muse 邀请码共享站，方便大家领码、分享码\n✅ 点一下随机抽一个邀请码，先到先得\n✅ 有多余的码欢迎贡献出来，帮更多人上车\n🫶欢迎转发给需要的朋友\nmuse-invite-board.vercel.app';
+$('shareBtn').onclick=async()=>{
+ const url='https://muse-invite-board.vercel.app/';
+ if(navigator.share){try{await navigator.share({title:'Muse 邀请码共享站',text:SHARE_TEXT,url});return}catch(e){if(e&&e.name==='AbortError')return}}
+ if(await copyRaw(SHARE_TEXT))toast('分享文案已复制，去粘贴给朋友吧');else toast('复制失败，长按手动复制吧');
 };
 load();
 </script>
