@@ -59,7 +59,6 @@ nav{display:flex;align-items:center;padding:20px 2px}
 .faq details[open] summary::after{content:"–"}
 .faq .a{padding:0 18px 16px;font-size:13px;color:var(--dim);line-height:1.9}
 .faq .a b{color:#c7d2fe}
-.paused-badge{display:inline-block;font-size:11px;font-weight:700;color:#fbbf24;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.35);border-radius:99px;padding:2px 10px;margin-left:8px;vertical-align:middle}
 .draw-tip{text-align:center;color:var(--dim);font-size:12px;margin-top:12px}
 .drawbox{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:26px 20px;text-align:center;margin-bottom:22px;backdrop-filter:blur(8px)}
 .draw-code{font-size:46px;font-weight:800;letter-spacing:10px;min-height:66px;font-family:ui-monospace,Menlo,monospace;
@@ -85,11 +84,7 @@ nav{display:flex;align-items:center;padding:20px 2px}
 .marquee:hover .marquee-track{animation-play-state:paused}
 @keyframes mqY{to{transform:translateY(-50%)}}
 .marquee .code-card{padding:12px 14px}
-.paused-list{margin-top:12px;display:grid;gap:8px}
-.paused-row{display:flex;align-items:center;gap:10px;background:rgba(251,191,36,.06);
-  border:1px solid rgba(251,191,36,.25);border-radius:12px;padding:10px 14px}
-.paused-row .c{font-family:ui-monospace,Menlo,monospace;font-weight:800;letter-spacing:2px;font-size:15px}
-.paused-row .t{flex:1;color:var(--dim);font-size:12px}
+.marquee-sm{max-height:210px}
 .codes{display:grid;gap:12px}
 .code-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;backdrop-filter:blur(8px)}
 .code-card .row1{display:flex;align-items:center;justify-content:space-between}
@@ -139,7 +134,7 @@ footer a{color:var(--acc);text-decoration:none}
   <nav>
     <div class="logo">🎟️ <span>Muse 邀请码</span></div>
     <button class="mini" id="shareBtn" style="margin-left:auto">📤 分享</button>
-    <button class="mini" id="xShareBtn" style="margin-left:8px">𝕏 发到 X</button>
+    <button class="mini" id="xShareBtn" style="margin-left:8px"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" style="vertical-align:-1px;margin-right:5px"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>发到 X</button>
   </nav>
 
   <div class="shared-banner" id="sharedBanner" style="display:none">
@@ -195,12 +190,11 @@ footer a{color:var(--acc);text-decoration:none}
   <div style="display:flex;justify-content:center;margin-top:12px"><div class="cf-turnstile" data-sitekey="0x4AAAAAAFF0szN9GPU7gxiw" data-theme="dark"></div></div>
 
   <div class="sec-t">📋 网友分享的码<span class="upd" id="updTime"></span></div>
-  <div class="mq-hint">🎠 只展示 10 个 · 自动滚动中，按住可暂停点选</div>
+  <div class="mq-hint">🎠 随机 10 个滚动展示 · 被标记的不展示 · 按住暂停点选</div>
   <div class="marquee" id="codeMarquee"><div class="marquee-track" id="mqTrack"><div class="empty">加载中…</div></div></div>
-  <div class="paused-list" id="pausedBox"></div>
 
   <div class="sec-t">🕘 最近发放</div>
-  <div class="recent" id="recentBox"><div class="empty">加载中…</div></div>
+  <div class="marquee marquee-sm" id="recentMarquee"><div class="marquee-track" id="recentTrack"><div class="empty">加载中…</div></div></div>
 
   <div class="sec-t">💬 留言板</div>
   <div class="recent" id="msgList" style="margin-bottom:12px"><div class="empty">加载中…</div></div>
@@ -221,11 +215,11 @@ footer a{color:var(--acc);text-decoration:none}
     </details>
     <details>
       <summary>为什么码显示用不了？</summary>
-      <div class="a">每个邀请码只能被使用有限次（一般 <b>20–30 次</b>）。如果用不了，点下面的「标记失效」，它会立刻暂停发放，换个码再试。</div>
+      <div class="a">每个邀请码只能被使用有限次（一般 <b>20–30 次</b>）。如果用不了，点下面的「标记失效」，它会从网友分享区撤下展示（但抽码仍可能抽到它），换个码再试。</div>
     </details>
     <details>
       <summary>标记失效后会怎样？</summary>
-      <div class="a"><b>1 次标记就暂停发放</b>，不再进入抽取池；累计 <b>3 次标记会被自动隐藏</b>。如果是误标，点「👍 能用」可以恢复发放。</div>
+      <div class="a">被标记的码不再在网友分享区滚动展示，但抽码仍可能抽到它；累计 <b>3 次标记会被自动隐藏</b>。如果是误标，点「👍 能用」可以恢复展示。</div>
     </details>
     <details>
       <summary>这个站是官方的吗？</summary>
@@ -239,7 +233,7 @@ footer a{color:var(--acc);text-decoration:none}
 
   <footer>
     由 Cloudflare 强力驱动<br>
-    标记 1 次即暂停发放 · 3 次标记自动隐藏<br>
+    被标记即撤下展示 · 3 次标记自动隐藏<br>
     站长 <a href="https://x.com/styrigx" target="_blank" rel="noopener">@styrigx</a> · 随缘更新
   </footer>
 </div>
@@ -271,6 +265,20 @@ function cardHTML(c){
  </div>`;
 }
 function escHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+// 纵向跑马灯：内容超出可视区才滚动，复制一份实现无缝循环；触摸/悬停暂停
+function startMarquee(track,box){
+ track.classList.remove('run','paused');track.style.animationDuration='';
+ if(track.scrollHeight>box.clientHeight+4){
+  track.innerHTML+=track.innerHTML;
+  track.style.animationDuration=Math.max(8,track.scrollHeight/2/90)+'s';
+  track.classList.add('run');
+  let rt=null;
+  const pause=()=>{track.classList.add('paused');clearTimeout(rt)};
+  const resume=()=>{clearTimeout(rt);rt=setTimeout(()=>track.classList.remove('paused'),2500)};
+  box.ontouchstart=pause;box.ontouchend=resume;box.ontouchcancel=resume;
+  box.onmouseenter=pause;box.onmouseleave=resume;
+ }
+}
 async function load(){
  const r=await fetch(API+'/api/codes');const d=await r.json();
  const box=$('mqTrack'),mq=$('codeMarquee');
@@ -282,39 +290,27 @@ async function load(){
  // 更新时间：取码池最新动态
  const maxts=cs.reduce((m,c)=>Math.max(m,c.ts||0),0);
  $('updTime').textContent=maxts?' · '+relTime(maxts):'';
- // 跑马灯：随机取 10 个在发放中的码，自动滚动展示
+ // 跑马灯：随机取 10 个未被标记的码，自动滚动展示（被标记的只撤下展示，仍在抽取池）
  const active=cs.filter(c=>!c.paused);
- box.classList.remove('run','paused');box.style.animationDuration='';
  if(!cs.length){box.innerHTML='<div class="empty">板子还是空的<br>来贡献第一个吧 👆</div>'}
- else{
-   box.innerHTML=shuffle([...active]).slice(0,10).map(cardHTML).join('')||'<div class="empty">码都被暂停了，等恢复吧</div>';
-   // 内容超出可视区才滚动：复制一份实现无缝循环
-   if(box.scrollHeight>mq.clientHeight+4){
-     box.innerHTML+=box.innerHTML;
-     box.style.animationDuration=Math.max(8,box.scrollHeight/2/90)+'s';
-     box.classList.add('run');
-     let rt=null;
-     const pause=()=>{box.classList.add('paused');clearTimeout(rt)};
-     const resume=()=>{clearTimeout(rt);rt=setTimeout(()=>box.classList.remove('paused'),2500)};
-     mq.ontouchstart=pause;mq.ontouchend=resume;mq.ontouchcancel=resume;
-     mq.onmouseenter=pause;mq.onmouseleave=resume;
-   }
- }
- // 被暂停的码单独列出，可点 👍 恢复
- const paused=cs.filter(c=>c.paused);
- $('pausedBox').innerHTML=paused.map(c=>
- `<div class="paused-row"><span class="c">${c.code}</span><span class="t">⏸ 被标记暂停发放 · 👍${c.works} / 🚩${c.flags}</span><button class="mini" onclick="vote('${c.code}','works',this)">👍 能用恢复</button></div>`).join('');
+ else if(!active.length){box.innerHTML='<div class="empty">展示的码都被标记撤下了<br>用上面的抽码试试 👆</div>'}
+ else{box.innerHTML=shuffle([...active]).slice(0,10).map(cardHTML).join('');startMarquee(box,mq)}
  // 最新分享：按提交时间取最新 8 条
  const fresh=[...cs].sort((a,b)=>(b.ts||0)-(a.ts||0)).slice(0,8);
  $('fresh').innerHTML=fresh.map(c=>
  `<div class="chip" onclick="copy('${c.code}')"><div class="c">${c.code}</div><div class="b">${c.by}</div></div>`).join('');
- // 最近发放：Worker 记录的最近 12 次抽取
- const rc=d.recent||[];
- $('recentBox').innerHTML=rc.length?rc.map(r=>{
+ // 最近发放：取 7 条，纵向跑马灯滚动
+ const rc=(d.recent||[]).slice(0,7);
+ const rtrack=$('recentTrack'),rmq=$('recentMarquee');
+ if(!rc.length){rtrack.innerHTML='<div class="empty">还没有发放记录</div>'}
+ else{
+  rtrack.innerHTML=rc.map(r=>{
    const hit=cs.find(c=>c.code===r.code);
    const left=hit?(hit.estLeft!=null?hit.estLeft:Math.max(0,25-(hit.draws||0))):'–';
    return `<div class="recent-row"><span class="c">${r.code}</span><span class="t">${relTime(r.ts)} · 预估剩余 ~${left} 次</span><button class="mini" onclick="copy('${r.code}')">复制</button></div>`;
- }).join(''):'<div class="empty">还没有发放记录</div>';
+  }).join('');
+  startMarquee(rtrack,rmq);
+ }
  // 专属分享链接：?c=CODE 打开时高亮展示
  const shared=new URLSearchParams(location.search).get('c');
  if(shared&&/^[A-Z0-9]{6}$/.test(shared)&&cs.some(c=>c.code===shared)){
@@ -333,10 +329,21 @@ async function vote(code,kind,btn){
  const d=await r.json();
  btn.disabled=false;
  if(!r.ok){toast(d.error||'操作失败');return}
- if(kind==='works')toast(d.unpaused?'感谢！该码已恢复发放':'感谢反馈！');
- else toast(d.ignored?'已收到反馈':'已标记失效，该码暂停发放');
- if(d.ignored)return;
- if(d.unpaused){load();return} // 恢复发放后整列刷新，把它请回跑马灯
+ if(d.ignored){toast('已收到反馈');return}
+ if(kind==='flag'){
+  toast('已标记，该码撤下展示');
+  // 原地移除跑马灯里所有同码卡片（滚动有双份），不整页刷新；码仍在抽取池
+  document.querySelectorAll('.code-card[data-code="'+code+'"]').forEach(el=>el.remove());
+  const track=$('mqTrack');
+  if(!track.querySelector('.code-card')){
+   track.classList.remove('run','paused');track.style.animationDuration='';
+   track.innerHTML='<div class="empty">展示的码都被标记撤下了<br>用上面的抽码试试 👆</div>';
+  }
+  return;
+ }
+ // kind==='works'
+ if(d.unpaused){toast('感谢！该码已恢复展示');load();return} // 恢复展示后整列刷新，把它请回跑马灯
+ toast('感谢反馈！');
  // 原地更新所有同码卡片（跑马灯里有双份）：不整列重排，页面不跳动
  const cards=document.querySelectorAll('.code-card[data-code="'+code+'"]');
  const dw=(d.works||0);
@@ -345,10 +352,6 @@ async function vote(code,kind,btn){
    card.dataset.works=d.works||0;card.dataset.flags=d.flags||0;
    const b=card.querySelector('.meta b');if(b)b.textContent=d.works;
    const fl=card.querySelector('.meta .fl');if(fl)fl.textContent=d.flags;
-   const paused=d.paused;
-   const badge=card.querySelector('.paused-badge');
-   if(paused&&!badge){const t=card.querySelector('.row1 .c');if(t)t.insertAdjacentHTML('beforeend','<span class="paused-badge">⏸ 暂停发放</span>')}
-   if(!paused&&badge)badge.remove();
    card._dw=(d.works||0)-prev;
  });
  const sw=$('stWorks');
