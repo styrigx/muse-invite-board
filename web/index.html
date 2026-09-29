@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Muse 邀请码共享站</title>
-<meta name="description" content="拿一个码，留一个码。一个邀请码兑换 10 亿 Muse token：免费领码、加权轮换、网友互助。">
+<title>Muse Invite Code Board</title>
+<meta name="description" content="Take one, leave one. One invite code = 1 billion Muse tokens: free draws, weighted rotation, community sharing.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Muse 邀请码共享站">
-<meta property="og:description" content="拿一个码，留一个码。一个邀请码 = 10 亿 Muse token，免费领码，网友互助。">
+<meta property="og:title" content="Muse Invite Code Board">
+<meta property="og:description" content="Take one, leave one. One invite code = 1 billion Muse tokens, free to claim.">
 <meta property="og:image" content="https://muse-invite-board.vercel.app/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Muse 邀请码共享站">
-<meta name="twitter:description" content="拿一个码，留一个码。一个邀请码 = 10 亿 Muse token，免费领码。">
+<meta name="twitter:title" content="Muse Invite Code Board">
+<meta name="twitter:description" content="Take one, leave one. One invite code = 1 billion Muse tokens, free to claim.">
 <meta name="twitter:image" content="https://muse-invite-board.vercel.app/og-image.png">
 <link rel="dns-prefetch" href="https://muse-invite-board.styrigx.workers.dev">
 <link rel="preconnect" href="https://muse-invite-board.styrigx.workers.dev">
@@ -37,6 +37,8 @@ nav{display:flex;align-items:center;padding:18px 2px;border-bottom:1px solid var
 .navbtn{border:none;background:none;color:var(--muted);font-size:14px;cursor:pointer;
   font-family:var(--sans);display:inline-flex;align-items:center;gap:5px}
 .navbtn:active{color:var(--ink)}
+.langbtn{border:1px solid var(--line);background:var(--card);border-radius:99px;
+  padding:6px 14px;font-size:13px;color:var(--ink);cursor:pointer;font-family:var(--sans)}
 /* 主视觉 */
 .hero{text-align:center;padding:56px 0 10px}
 .eyebrow{font-size:12px;letter-spacing:6px;color:var(--muted);margin-bottom:18px;text-indent:6px}
@@ -64,7 +66,7 @@ nav{display:flex;align-items:center;padding:18px 2px;border-bottom:1px solid var
   min-height:70px;color:var(--ink)}
 .draw-code:empty::before{content:"······";opacity:.18;letter-spacing:12px}
 .draw-checked{margin-top:6px;min-height:22px}
-.draw-btns{display:flex;gap:10px;justify-content:center;margin-top:16px}
+.draw-btns{display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap}
 .btn{border:none;cursor:pointer;font-family:var(--serif);font-size:16px;letter-spacing:3px;text-indent:3px;
   color:var(--onpill);padding:15px 40px;border-radius:99px;background:var(--pill);
   transition:transform .15s, opacity .15s}
@@ -150,9 +152,15 @@ nav{display:flex;align-items:center;padding:18px 2px;border-bottom:1px solid var
 .faq details[open] summary::after{content:"–"}
 .faq .a{padding:0 4px 18px;font-size:13px;color:var(--muted);line-height:2}
 .faq .a b{color:var(--ink)}
+/* 隐私页 */
+.privacy-body{background:var(--card);border:1px solid var(--line);border-radius:18px;
+  padding:24px;font-size:14px;line-height:2.1;color:var(--muted)}
+.privacy-body p{margin-bottom:14px}
+.privacy-body b{color:var(--ink)}
+.privacy-body a{color:var(--ink)}
 footer{text-align:center;color:var(--muted);font-size:12px;margin-top:52px;line-height:2.2;
   border-top:1px solid var(--line);padding-top:24px;letter-spacing:1px}
-footer a{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+footer a{color:var(--ink);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 .toast{position:fixed;left:50%;bottom:32px;transform:translateX(-50%);background:var(--pill);
   color:var(--onpill);padding:13px 24px;border-radius:99px;font-size:14px;display:none;
   z-index:9;max-width:92vw;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.25)}
@@ -167,143 +175,229 @@ footer a{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
 <body>
 <div class="wrap">
   <nav>
-    <div class="wordmark">Muse 码池</div>
-    <button class="navbtn" id="shareBtn" style="margin-left:auto">分享</button>
-    <button class="navbtn" id="xShareBtn" style="margin-left:16px"><svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" style="margin-right:2px"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>发到 X</button>
+    <div class="wordmark" data-i18n="wordmark">Muse Pool</div>
+    <button class="langbtn" id="langBtn" style="margin-left:auto">中文</button>
+    <button class="navbtn" id="shareBtn" style="margin-left:12px" data-i18n="navShare">Share</button>
+    <button class="navbtn" id="xShareBtn" style="margin-left:14px"><svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" style="margin-right:2px"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg><span data-i18n="navX">Post to X</span></button>
   </nav>
 
-  <div class="shared-banner" id="sharedBanner" style="display:none">
-    <div class="sb-t">朋友分享给你的邀请码</div>
-    <div class="sb-c" id="sbCode">------</div>
-    <div class="vote">
-      <button id="sbCopy">复制</button>
-      <button id="sbWorks">👍 能用</button>
-      <button id="sbFlag">标记失效</button>
+  <div id="mainView">
+    <div class="shared-banner" id="sharedBanner" style="display:none">
+      <div class="sb-t" data-i18n="sbTitle">A code shared with you by a friend</div>
+      <div class="sb-c" id="sbCode">------</div>
+      <div class="vote">
+        <button id="sbCopy" data-i18n="copy">Copy</button>
+        <button id="sbWorks" data-i18n="works">👍 Works</button>
+        <button id="sbFlag" data-i18n="flag">Flag as dead</button>
+      </div>
     </div>
-  </div>
 
-  <div class="hero">
-    <div class="eyebrow">陌生人互助 · 邀请码池</div>
-    <h1>拿一个码，<br>留一个码。</h1>
-    <p class="sub">一个邀请码 = <b>10 亿 Muse token</b>，免费领<br>专治码不好找、找到的已失效；自己的码没地方分享</p>
-  </div>
-
-  <div class="drawbox">
-    <div class="draw-code" id="drawCode"></div>
-    <div class="draw-checked"><span class="checked" id="drawChecked" style="display:none">✓ 已核验</span></div>
-    <div class="draw-btns">
-      <button class="btn" id="drawBtn">抽一个邀请码</button>
-      <button class="btn-ghost" id="copyDrawBtn">复制</button>
+    <div class="hero">
+      <div class="eyebrow" data-i18n="eyebrow">A community pool, run by strangers</div>
+      <h1 data-i18n-html="heroTitle">Take one,<br>leave one.</h1>
+      <p class="sub" data-i18n-html="heroSub">One code = <b>1 billion Muse tokens</b>, free to claim<br>Codes are hard to find, and found ones are often dead — share yours here</p>
     </div>
-    <div class="vote" id="drawFeedback" style="display:none">
-      <button id="drawWorks">👍 能用</button>
-      <button id="drawFlag">标记失效</button>
+
+    <div class="drawbox">
+      <div class="draw-code" id="drawCode"></div>
+      <div class="draw-checked"><span class="checked" id="drawChecked" style="display:none" data-i18n="verified">✓ Verified</span></div>
+      <div class="draw-btns">
+        <button class="btn" id="drawBtn" data-i18n="drawBtn">Draw an invite code</button>
+        <button class="btn-ghost" id="copyDrawBtn" data-i18n="copy">Copy</button>
+      </div>
+      <div class="vote" id="drawFeedback" style="display:none">
+        <button id="drawWorks" data-i18n="works">👍 Works</button>
+        <button id="drawFlag" data-i18n="flag">Flag as dead</button>
+      </div>
+      <div class="draw-tip" data-i18n-html="drawTip">Weighted rotation: codes drawn less often go first, new codes won't get burned instantly<br>Auto-copied on draw</div>
     </div>
-    <div class="draw-tip">加权轮换：被抽得少的码优先，新码不会被瞬间领爆<br>抽到自动复制</div>
+
+    <div class="stats">
+      <div class="stat"><b id="stCodes">–</b><small data-i18n="stCodes">In rotation</small></div>
+      <div class="stat"><b id="stDraws">–</b><small data-i18n="stDraws">Total draws</small></div>
+      <div class="stat"><b id="stWorks">–</b><small data-i18n="stWorks">Works votes</small></div>
+      <div class="stat"><b id="stToday">–</b><small data-i18n="stToday">Added today</small></div>
+    </div>
+
+    <div class="steps">
+      <div class="step"><span class="n">1</span><b data-i18n="step1t">Draw a code</b><span data-i18n="step1d">Free, first come first served</span></div>
+      <div class="step"><span class="n">2</span><b data-i18n="step2t">Redeem in Muse</b><span data-i18n="step2d">Redeem tokens in the app settings</span></div>
+      <div class="step"><span class="n">3</span><b data-i18n="step3t">Report back</b><span data-i18n="step3d">Tap 👍 or flag as dead</span></div>
+    </div>
+
+    <div class="sec-t" data-i18n="secFresh">Fresh shares</div>
+    <div class="fresh" id="fresh"><div class="empty">Loading…</div></div>
+
+    <div class="sec-t" data-i18n="secShare">Share your invite code</div>
+    <div class="share">
+      <input id="codeInput" maxlength="6" data-i18n-ph="codePh" placeholder="Enter a 6-character code" autocomplete="off">
+      <button class="btn" id="submitBtn" data-i18n="submit">Submit</button>
+    </div>
+    <div class="turnstile-wrap"><div class="cf-turnstile" data-sitekey="0x4AAAAAAFF0szN9GPU7gxiw" data-theme="light"></div></div>
+
+    <div class="sec-t"><span data-i18n="secCodes">Community codes</span><span class="upd" id="updTime"></span></div>
+    <div class="mq-hint" data-i18n="mqHint">10 random codes on rotation · flagged ones hidden · hold to pause &amp; pick</div>
+    <div class="marquee" id="codeMarquee"><div class="marquee-track" id="mqTrack"><div class="empty">Loading…</div></div></div>
+
+    <div class="sec-t" data-i18n="secRecent">Recently handed out</div>
+    <div class="mq-hint" data-i18n="recentHint">Latest 7 draws · auto-scrolling</div>
+    <div class="marquee marquee-sm" id="recentMarquee"><div class="marquee-track" id="recentTrack"><div class="empty">Loading…</div></div></div>
+
+    <div class="sec-t" data-i18n="secMsg">Message board</div>
+    <div class="recent" id="msgList" style="margin-bottom:12px"><div class="empty">Loading…</div></div>
+    <div class="share">
+      <input id="msgInput" maxlength="200" data-i18n-ph="msgPh" placeholder="Leave a note (200 chars, one per IP)" autocomplete="off" style="letter-spacing:0;font-size:14px;text-align:left;text-transform:none;font-family:var(--sans)">
+      <button class="btn" id="msgBtn" data-i18n="msgBtn">Post</button>
+    </div>
+
+    <div class="sec-t" data-i18n="secFaq">FAQ</div>
+    <div class="faq" id="faqBox"></div>
+
+    <footer>
+      <span data-i18n="poweredBy">Powered by</span> Cloudflare<br>
+      <a id="privacyLink" data-i18n="privacy">Privacy</a> · <a href="https://x.com/styrigx" target="_blank" rel="noopener">@styrigx</a> · <span data-i18n="casual">updates when I feel like it</span>
+    </footer>
   </div>
 
-  <div class="stats">
-    <div class="stat"><b id="stCodes">–</b><small>在轮转</small></div>
-    <div class="stat"><b id="stDraws">–</b><small>累计抽取</small></div>
-    <div class="stat"><b id="stWorks">–</b><small>能用反馈</small></div>
-    <div class="stat"><b id="stToday">–</b><small>今日新增</small></div>
+  <div id="privacyView" style="display:none">
+    <button class="mini" id="privacyBack" style="margin-top:20px">← <span data-i18n="back">Back</span></button>
+    <div class="sec-t" data-i18n="privacy">Privacy</div>
+    <div class="privacy-body" id="privacyBody"></div>
+    <footer>
+      <span data-i18n="poweredBy">Powered by</span> Cloudflare<br>
+      <a id="privacyLink2" data-i18n="privacy">Privacy</a> · <a href="https://x.com/styrigx" target="_blank" rel="noopener">@styrigx</a> · <span data-i18n="casual">updates when I feel like it</span>
+    </footer>
   </div>
-
-  <div class="steps">
-    <div class="step"><span class="n">1</span><b>抽一个码</b>免费领，先到先得</div>
-    <div class="step"><span class="n">2</span><b>去 Muse 兑换</b>App 设置里兑换拿 token</div>
-    <div class="step"><span class="n">3</span><b>回来反馈</b>点 👍 或标记失效</div>
-  </div>
-
-  <div class="sec-t">最新分享</div>
-  <div class="fresh" id="fresh"><div class="empty">加载中…</div></div>
-
-  <div class="sec-t">分享你的邀请码</div>
-  <div class="share">
-    <input id="codeInput" maxlength="6" placeholder="输入6位邀请码" autocomplete="off">
-    <button class="btn" id="submitBtn">提交</button>
-  </div>
-  <div class="turnstile-wrap"><div class="cf-turnstile" data-sitekey="0x4AAAAAAFF0szN9GPU7gxiw" data-theme="light"></div></div>
-
-  <div class="sec-t">网友分享的码<span class="upd" id="updTime"></span></div>
-  <div class="mq-hint">随机 10 个滚动展示 · 被标记的不展示 · 按住暂停点选</div>
-  <div class="marquee" id="codeMarquee"><div class="marquee-track" id="mqTrack"><div class="empty">加载中…</div></div></div>
-
-  <div class="sec-t">最近发放</div>
-  <div class="mq-hint">最近 7 次发放记录 · 自动滚动</div>
-  <div class="marquee marquee-sm" id="recentMarquee"><div class="marquee-track" id="recentTrack"><div class="empty">加载中…</div></div></div>
-
-  <div class="sec-t">留言板</div>
-  <div class="recent" id="msgList" style="margin-bottom:12px"><div class="empty">加载中…</div></div>
-  <div class="share">
-    <input id="msgInput" maxlength="200" placeholder="留句话吧（200字内，每IP限一条）" autocomplete="off" style="letter-spacing:0;font-size:14px;text-align:left;text-transform:none;font-family:var(--sans)">
-    <button class="btn" id="msgBtn">留言</button>
-  </div>
-
-  <div class="sec-t">常见问题</div>
-  <div class="faq">
-    <details>
-      <summary>领到的码有什么用？</summary>
-      <div class="a">一个邀请码可以兑换 <b>10 亿 Muse token</b>。在 <b>Muse App（或网页版）的设置里兑换</b>，注册后 <b>48 小时内</b>有效，过期就兑不了了。</div>
-    </details>
-    <details>
-      <summary>抽码是什么机制？</summary>
-      <div class="a">不是纯随机。<b>每个码被抽走的次数会被记录，被抽得少的码优先被抽到</b>——新贡献的码不会被瞬间领爆，老码也不会沉底。</div>
-    </details>
-    <details>
-      <summary>「✓ 已核验」是什么意思？</summary>
-      <div class="a">有人点过 <b>「👍 能用」</b> 的码会打上已核验标记，说明它大概率还能用。优先选带标记的码，抽到后也回来点一下，帮下一个人。</div>
-    </details>
-    <details>
-      <summary>为什么码显示用不了？</summary>
-      <div class="a">每个邀请码只能被使用有限次（一般 <b>20–30 次</b>）。如果用不了，点下面的「标记失效」，它会从网友分享区撤下展示（但抽码仍可能抽到它），换个码再试。</div>
-    </details>
-    <details>
-      <summary>标记失效后会怎样？</summary>
-      <div class="a">被标记的码不再在网友分享区滚动展示，但抽码仍可能抽到它；累计 <b>3 次标记会被自动隐藏</b>。如果是误标，点「👍 能用」可以恢复展示。</div>
-    </details>
-    <details>
-      <summary>这个站是官方的吗？</summary>
-      <div class="a">不是。这是网友自发维护的独立小站，<b>不收集你的 Muse 或任何账号登录信息</b>，所有码免费，也别为邀请码花钱。</div>
-    </details>
-    <details>
-      <summary>我贡献的码也会被分享吗？</summary>
-      <div class="a">会。你提交的码会立刻进入轮换池——<b>拿一个码，留一个码</b>，池子就是这样转起来的。</div>
-    </details>
-  </div>
-
-  <footer>
-    由 Cloudflare 强力驱动<br>
-    被标记即撤下展示 · 3 次标记自动隐藏<br>
-    站长 <a href="https://x.com/styrigx" target="_blank" rel="noopener">@styrigx</a> · 随缘更新
-  </footer>
 </div>
 <div class="toast" id="toast"></div>
 
 <script>
 const API="https://muse-invite-board.styrigx.workers.dev";
 const $=id=>document.getElementById(id);
+let LANG=localStorage.getItem('ib-lang')||'en';
 let lastCodes=[];
+
+const I18N={
+en:{
+  wordmark:"Muse Pool", navShare:"Share", navX:"Post to X", langBtn:"中文",
+  eyebrow:"A community pool, run by strangers",
+  heroTitle:"Take one,<br>leave one.",
+  heroSub:"One code = <b>1 billion Muse tokens</b>, free to claim<br>Codes are hard to find, and found ones are often dead — share yours here",
+  drawBtn:"Draw an invite code", copy:"Copy", verified:"✓ Verified",
+  works:"👍 Works", flag:"Flag as dead",
+  drawTip:"Weighted rotation: codes drawn less often go first, new codes won't get burned instantly<br>Auto-copied on draw",
+  stCodes:"In rotation", stDraws:"Total draws", stWorks:"Works votes", stToday:"Added today",
+  step1t:"Draw a code", step1d:"Free, first come first served",
+  step2t:"Redeem in Muse", step2d:"Redeem tokens in the app settings",
+  step3t:"Report back", step3d:"Tap 👍 or flag as dead",
+  secFresh:"Fresh shares", secShare:"Share your invite code", codePh:"Enter a 6-character code", submit:"Submit",
+  secCodes:"Community codes", mqHint:"10 random codes on rotation · flagged ones hidden · hold to pause & pick",
+  secRecent:"Recently handed out", recentHint:"Latest 7 draws · auto-scrolling",
+  secMsg:"Message board", msgPh:"Leave a note (200 chars, one per IP)", msgBtn:"Post", secFaq:"FAQ",
+  sbTitle:"A code shared with you by a friend",
+  privacy:"Privacy", back:"Back", poweredBy:"Powered by", casual:"updates when I feel like it",
+  docTitle:"Muse Invite Code Board",
+  tCopied:"Copied: ", tDrawFirst:"Draw one first",
+  tBadFormat:"Invalid format — 6 letters/digits", tNeedHuman:"Please complete the human check first",
+  tSubmitFail:"Submit failed", tSubmitted:"Thanks for sharing!",
+  tWriteMore:"Write a bit more", tMsgFail:"Couldn't post", tMsgOk:"Posted!",
+  tOpFail:"Failed", tFeedbackGot:"Feedback received",
+  tFlagged:"Flagged — removed from display", tUnpaused:"Thanks! It's back on display", tThanks:"Thanks!",
+  tLinkCopied:"Share link copied — send it to a friend",
+  tCopyFail:"Copy failed — long-press to copy manually",
+  tShareCopied:"Share text copied",
+  emptyBoard:"The board is empty<br>Share the first one 👆",
+  emptyFlagged:"All displayed codes were flagged<br>Try the draw above 👆",
+  emptyRecent:"No draws yet", emptyMsg:"No messages yet — grab the first seat",
+  msgLoadFail:"Couldn't load messages, try refreshing",
+  usesLeft:"uses left",
+  faq:[
+    ["What are the codes good for?","One invite code redeems <b>1 billion Muse tokens</b>. Redeem it in <b>the Muse app (or web) settings</b> — it must be used <b>within 48 hours of registration</b>, or it expires."],
+    ["How does the draw work?","Not pure random. <b>Every draw is counted, and codes drawn less often get picked first</b> — newly shared codes won't get burned in seconds, and old ones won't sink to the bottom."],
+    ["What does \"✓ Verified\" mean?","Codes that someone marked <b>\"👍 Works\"</b> get a verified badge — they're likely still good. Pick badged codes first, and come back to vote after you draw one. It helps the next person."],
+    ["Why doesn't my code work?","Each code only has a limited number of uses (usually <b>20–30</b>). If it fails, hit \"Flag as dead\" below — it leaves the community display (but may still be drawn) — then try another."],
+    ["What happens after flagging?","Flagged codes stop showing in the community marquee but can still be drawn; <b>3 flags gets a code auto-hidden</b>. Wrongly flagged? A \"👍 Works\" vote brings it back."],
+    ["Is this site official?","No. It's a tiny independent board run by volunteers. <b>We never collect your Muse or any account login info</b>. All codes are free — never pay for one."],
+    ["Will my code get shared too?","Yes. Your code joins the rotation the moment you submit it — <b>take one, leave one</b>. That's how the pool keeps turning."]
+  ],
+  privacyBody:"<p><b>Privacy</b> — this is a tiny community board, so the data story is short.</p><p><b>No accounts.</b> We never ask for your Muse login or any credentials.</p><p><b>What you submit:</b> invite codes you share, votes (works / flag), and board messages. Codes and messages are public by design.</p><p><b>What we log:</b> your IP address is used only for rate limiting and the one-message-per-IP rule on the board. No profiling, no cross-site tracking.</p><p><b>Where it lives:</b> codes in Supabase (Singapore), recent draws and messages in Cloudflare KV, the page itself on Vercel. Standard Cloudflare request logs apply.</p><p><b>Cookies:</b> none of ours. Cloudflare's human check (Turnstile) may set its own.</p><p><b>Deletion:</b> codes flagged 3 times are auto-hidden by daily cleanup. Messages can't be edited — post carefully.</p><p>Questions? Find me on X: <a href=\"https://x.com/styrigx\" target=\"_blank\" rel=\"noopener\">@styrigx</a></p>"
+},
+zh:{
+  wordmark:"Muse 码池", navShare:"分享", navX:"发到 X", langBtn:"EN",
+  eyebrow:"陌生人互助 · 邀请码池",
+  heroTitle:"拿一个码，<br>留一个码。",
+  heroSub:"一个邀请码 = <b>10 亿 Muse token</b>，免费领<br>专治码不好找、找到的已失效；自己的码没地方分享",
+  drawBtn:"抽一个邀请码", copy:"复制", verified:"✓ 已核验",
+  works:"👍 能用", flag:"标记失效",
+  drawTip:"加权轮换：被抽得少的码优先，新码不会被瞬间领爆<br>抽到自动复制",
+  stCodes:"在轮转", stDraws:"累计抽取", stWorks:"能用反馈", stToday:"今日新增",
+  step1t:"抽一个码", step1d:"免费领，先到先得",
+  step2t:"去 Muse 兑换", step2d:"App 设置里兑换拿 token",
+  step3t:"回来反馈", step3d:"点 👍 或标记失效",
+  secFresh:"最新分享", secShare:"分享你的邀请码", codePh:"输入6位邀请码", submit:"提交",
+  secCodes:"网友分享的码", mqHint:"随机 10 个滚动展示 · 被标记的不展示 · 按住暂停点选",
+  secRecent:"最近发放", recentHint:"最近 7 次发放记录 · 自动滚动",
+  secMsg:"留言板", msgPh:"留句话吧（200字内，每IP限一条）", msgBtn:"留言", secFaq:"常见问题",
+  sbTitle:"朋友分享给你的邀请码",
+  privacy:"隐私政策", back:"返回", poweredBy:"由", casual:"随缘更新",
+  docTitle:"Muse 邀请码共享站",
+  tCopied:"已复制：", tDrawFirst:"先抽一个吧",
+  tBadFormat:"格式不对，应为6位字母/数字", tNeedHuman:"请先完成人机验证",
+  tSubmitFail:"提交失败", tSubmitted:"贡献成功，感谢！",
+  tWriteMore:"多写几个字吧", tMsgFail:"留言失败", tMsgOk:"留言成功",
+  tOpFail:"操作失败", tFeedbackGot:"已收到反馈",
+  tFlagged:"已标记，该码撤下展示", tUnpaused:"感谢！该码已恢复展示", tThanks:"感谢反馈！",
+  tLinkCopied:"专属分享链接已复制，发给朋友吧",
+  tCopyFail:"复制失败，长按手动复制吧",
+  tShareCopied:"分享文案已复制，去粘贴给朋友吧",
+  emptyBoard:"板子还是空的<br>来贡献第一个吧 👆",
+  emptyFlagged:"展示的码都被标记撤下了<br>用上面的抽码试试 👆",
+  emptyRecent:"还没有发放记录", emptyMsg:"还没有留言，来抢沙发吧",
+  msgLoadFail:"留言加载失败，刷新试试",
+  usesLeft:"次",
+  faq:[
+    ["领到的码有什么用？","一个邀请码可以兑换 <b>10 亿 Muse token</b>。在 <b>Muse App（或网页版）的设置里兑换</b>，注册后 <b>48 小时内</b>有效，过期就兑不了了。"],
+    ["抽码是什么机制？","不是纯随机。<b>每个码被抽走的次数会被记录，被抽得少的码优先被抽到</b>——新贡献的码不会被瞬间领爆，老码也不会沉底。"],
+    ["「✓ 已核验」是什么意思？","有人点过 <b>「👍 能用」</b> 的码会打上已核验标记，说明它大概率还能用。优先选带标记的码，抽到后也回来点一下，帮下一个人。"],
+    ["为什么码显示用不了？","每个邀请码只能被使用有限次（一般 <b>20–30 次</b>）。如果用不了，点下面的「标记失效」，它会从网友分享区撤下展示（但抽码仍可能抽到它），换个码再试。"],
+    ["标记失效后会怎样？","被标记的码不再在网友分享区滚动展示，但抽码仍可能抽到它；累计 <b>3 次标记会被自动隐藏</b>。如果是误标，点「👍 能用」可以恢复展示。"],
+    ["这个站是官方的吗？","不是。这是网友自发维护的独立小站，<b>不收集你的 Muse 或任何账号登录信息</b>，所有码免费，也别为邀请码花钱。"],
+    ["我贡献的码也会被分享吗？","会。你提交的码会立刻进入轮换池——<b>拿一个码，留一个码</b>，池子就是这样转起来的。"]
+  ],
+  privacyBody:"<p><b>隐私政策</b>——这是个小小的网友互助板，数据故事很短。</p><p><b>无需注册。</b>我们从不索取你的 Muse 登录信息或任何账号密码。</p><p><b>你提交的：</b>分享的邀请码、投票（能用 / 失效标记）、留言板留言。码和留言本来就是公开的。</p><p><b>我们记录的：</b>IP 地址仅用于频率限制和留言板“每 IP 一条”的规则。不画像、不跨站追踪。</p><p><b>数据在哪：</b>码存在 Supabase（新加坡），最近发放和留言存在 Cloudflare KV，页面在 Vercel。Cloudflare 的标准请求日志照常。</p><p><b>Cookie：</b>我们自己不设。Cloudflare 的人机验证（Turnstile）可能会设它自己的。</p><p><b>删除：</b>被标记 3 次的码会被每日清理自动隐藏。留言不能编辑——下笔前想好。</p><p>有问题？去 X 找我：<a href=\"https://x.com/styrigx\" target=\"_blank\" rel=\"noopener\">@styrigx</a></p>"
+}};
+
+function T(k){return (I18N[LANG]&&I18N[LANG][k]!==undefined)?I18N[LANG][k]:I18N.en[k]}
 function toast(m){const t=$('toast');t.textContent=m;t.style.display='block';clearTimeout(t._h);t._h=setTimeout(()=>t.style.display='none',2200)}
-async function copy(t){try{await navigator.clipboard.writeText(t);toast('已复制：'+t)}catch{const i=document.createElement('input');i.value=t;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove();toast('已复制：'+t)}}
+async function copy(t){try{await navigator.clipboard.writeText(t);toast(T('tCopied')+t)}catch{const i=document.createElement('input');i.value=t;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove();toast(T('tCopied')+t)}}
 async function copyRaw(t){try{await navigator.clipboard.writeText(t);return true}catch{try{const i=document.createElement('input');i.value=t;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove();return true}catch{return false}}}
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const t=a[i];a[i]=a[j];a[j]=t}return a}
 function relTime(ts){
  if(!ts)return'';
  const m=Math.floor((Date.now()-ts)/60000);
- if(m<1)return'刚刚更新';
- if(m<60)return m+'分钟前更新';
+ if(LANG==='zh'){
+  if(m<1)return'刚刚更新';
+  if(m<60)return m+'分钟前更新';
+  const d=new Date(ts);
+  return (d.getMonth()+1)+'月'+d.getDate()+'日 '+d.getHours()+':'+String(d.getMinutes()).padStart(2,'0')+'更新';
+ }
+ if(m<1)return'just now';
+ if(m<60)return 'updated '+m+'m ago';
  const d=new Date(ts);
- return (d.getMonth()+1)+'月'+d.getDate()+'日 '+d.getHours()+':'+String(d.getMinutes()).padStart(2,'0')+'更新';
+ return 'updated '+(d.getMonth()+1)+'/'+d.getDate()+' '+d.getHours()+':'+String(d.getMinutes()).padStart(2,'0');
 }
-function checkedBadge(c){return (c.works||0)>=1?' <span class="checked">✓ 已核验</span>':''}
+function checkedBadge(){return ' <span class="checked">'+T('verified')+'</span>'}
+function metaLine(c){
+ if(LANG==='zh')return `${c.by} · 👍 <b>${c.works}</b>人说能用 · 已抽${c.draws}次 · <span class="fl">${c.flags}</span>人标记`;
+ return `${c.by} · 👍 <b>${c.works}</b> said it works · drawn ${c.draws}× · <span class="fl">${c.flags}</span> flags`;
+}
 function cardHTML(c){
  return `<div class="code-card" data-code="${c.code}" data-works="${c.works||0}" data-flags="${c.flags||0}">
-   <div class="row1"><span class="c">${c.code}</span><span><button class="mini" onclick="shareCode('${c.code}')" style="margin-right:6px">🔗</button><button class="mini" onclick="copy('${c.code}')">复制</button></span></div>
-   <div class="meta">${c.by} · 👍 <b>${c.works}</b>人说能用 · 已抽${c.draws}次 · <span class="fl">${c.flags}</span>人标记${checkedBadge(c)}</div>
+   <div class="row1"><span class="c">${c.code}</span><span><button class="mini" onclick="shareCode('${c.code}')" style="margin-right:6px">🔗</button><button class="mini" onclick="copy('${c.code}')">${T('copy')}</button></span></div>
+   <div class="meta">${metaLine(c)}${(c.works||0)>=1?checkedBadge():''}</div>
    <div class="vote">
-     <button class="w" onclick="vote('${c.code}','works',this)">👍 能用</button>
-     <button class="f" onclick="vote('${c.code}','flag',this)">标记失效</button>
+     <button class="w" onclick="vote('${c.code}','works',this)">${T('works')}</button>
+     <button class="f" onclick="vote('${c.code}','flag',this)">${T('flag')}</button>
    </div>
  </div>`;
 }
@@ -322,6 +416,28 @@ function startMarquee(track,box){
   box.onmouseenter=pause;box.onmouseleave=resume;
  }
 }
+function renderFaq(){
+ $('faqBox').innerHTML=T('faq').map(f=>
+  `<details><summary>${f[0]}</summary><div class="a">${f[1]}</div></details>`).join('');
+}
+function renderPrivacy(){$('privacyBody').innerHTML=T('privacyBody')}
+function applyLang(l){
+ LANG=l;localStorage.setItem('ib-lang',l);
+ document.documentElement.lang=(l==='zh'?'zh-CN':'en');
+ document.title=T('docTitle');
+ $('langBtn').textContent=T('langBtn');
+ document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=T(el.dataset.i18n)});
+ document.querySelectorAll('[data-i18n-html]').forEach(el=>{el.innerHTML=T(el.dataset.i18nHtml)});
+ document.querySelectorAll('[data-i18n-ph]').forEach(el=>{el.placeholder=T(el.dataset.i18nPh)});
+ renderFaq();
+ if($('privacyView').style.display!=='none')renderPrivacy();
+ load();
+}
+function showPrivacy(on){
+ $('mainView').style.display=on?'none':'block';
+ $('privacyView').style.display=on?'block':'none';
+ if(on){renderPrivacy();window.scrollTo(0,0)}else{window.scrollTo(0,0)}
+}
 async function load(){
  const r=await fetch(API+'/api/codes');const d=await r.json();
  const box=$('mqTrack'),mq=$('codeMarquee');
@@ -336,8 +452,8 @@ async function load(){
  $('updTime').textContent=maxts?' · '+relTime(maxts):'';
  // 跑马灯：随机取 10 个未被标记的码，自动滚动展示（被标记的只撤下展示，仍在抽取池）
  const active=cs.filter(c=>!c.paused);
- if(!cs.length){box.innerHTML='<div class="empty">板子还是空的<br>来贡献第一个吧 👆</div>'}
- else if(!active.length){box.innerHTML='<div class="empty">展示的码都被标记撤下了<br>用上面的抽码试试 👆</div>'}
+ if(!cs.length){box.innerHTML='<div class="empty">'+T('emptyBoard')+'</div>'}
+ else if(!active.length){box.innerHTML='<div class="empty">'+T('emptyFlagged')+'</div>'}
  else{box.innerHTML=shuffle([...active]).slice(0,10).map(cardHTML).join('');startMarquee(box,mq)}
  // 最新分享：按提交时间取最新 8 条
  const fresh=[...cs].sort((a,b)=>(b.ts||0)-(a.ts||0)).slice(0,8);
@@ -346,12 +462,14 @@ async function load(){
  // 最近发放：取 7 条，纵向跑马灯滚动
  const rc=(d.recent||[]).slice(0,7);
  const rtrack=$('recentTrack'),rmq=$('recentMarquee');
- if(!rc.length){rtrack.innerHTML='<div class="empty">还没有发放记录</div>'}
+ if(!rc.length){rtrack.innerHTML='<div class="empty">'+T('emptyRecent')+'</div>'}
  else{
   rtrack.innerHTML=rc.map(r=>{
    const hit=cs.find(c=>c.code===r.code);
    const left=hit?(hit.estLeft!=null?hit.estLeft:Math.max(0,25-(hit.draws||0))):'–';
-   return `<div class="recent-row"><span class="c">${r.code}</span><span class="t">${relTime(r.ts)} · 预估剩余 ~${left} 次${hit?checkedBadge(hit).replace(' <span','<span'):''}</span><button class="mini" onclick="copy('${r.code}')">复制</button></div>`;
+   const badge=(hit&&(hit.works||0)>=1)?checkedBadge().replace(' <span','<span'):'';
+   const leftTxt=LANG==='zh'?`预估剩余 ~${left} 次`:`~${left} ${T('usesLeft')}`;
+   return `<div class="recent-row"><span class="c">${r.code}</span><span class="t">${relTime(r.ts)} · ${leftTxt}${badge}</span><button class="mini" onclick="copy('${r.code}')">${T('copy')}</button></div>`;
   }).join('');
   startMarquee(rtrack,rmq);
  }
@@ -372,22 +490,22 @@ async function vote(code,kind,btn){
  const r=await fetch(API+'/api/vote',{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({code,kind})});
  const d=await r.json();
  btn.disabled=false;
- if(!r.ok){toast(d.error||'操作失败');return}
- if(d.ignored){toast('已收到反馈');return}
+ if(!r.ok){toast(d.error||T('tOpFail'));return}
+ if(d.ignored){toast(T('tFeedbackGot'));return}
  if(kind==='flag'){
-  toast('已标记，该码撤下展示');
+  toast(T('tFlagged'));
   // 原地移除跑马灯里所有同码卡片（滚动有双份），不整页刷新；码仍在抽取池
   document.querySelectorAll('.code-card[data-code="'+code+'"]').forEach(el=>el.remove());
   const track=$('mqTrack');
   if(!track.querySelector('.code-card')){
    track.classList.remove('run','paused');track.style.animationDuration='';
-   track.innerHTML='<div class="empty">展示的码都被标记撤下了<br>用上面的抽码试试 👆</div>';
+   track.innerHTML='<div class="empty">'+T('emptyFlagged')+'</div>';
   }
   return;
  }
  // kind==='works'
- if(d.unpaused){toast('感谢！该码已恢复展示');load();return} // 恢复展示后整列刷新，把它请回跑马灯
- toast('感谢反馈！');
+ if(d.unpaused){toast(T('tUnpaused'));load();return} // 恢复展示后整列刷新，把它请回跑马灯
+ toast(T('tThanks'));
  // 原地更新所有同码卡片（跑马灯里有双份）：不整列重排，页面不跳动
  const cards=document.querySelectorAll('.code-card[data-code="'+code+'"]');
  const dw=(d.works||0);
@@ -398,7 +516,7 @@ async function vote(code,kind,btn){
    const fl=card.querySelector('.meta .fl');if(fl)fl.textContent=d.flags;
    if((d.works||0)>=1&&!card.querySelector('.checked')){
      const meta=card.querySelector('.meta');
-     if(meta)meta.insertAdjacentHTML('beforeend',' <span class="checked">✓ 已核验</span>');
+     if(meta)meta.insertAdjacentHTML('beforeend',checkedBadge());
    }
    card._dw=(d.works||0)-prev;
  });
@@ -407,7 +525,7 @@ async function vote(code,kind,btn){
 }
 $('drawBtn').onclick=async()=>{
  const r=await fetch(API+'/api/draw',{method:'POST'});const d=await r.json();
- if(!r.ok){toast(d.error||'抽取失败');return}
+ if(!r.ok){toast(d.error||T('tOpFail'));return}
  lastDraw=d.code;
  $('drawCode').textContent=d.code;copy(d.code);
  const hit=lastCodes.find(c=>c.code===d.code);
@@ -419,7 +537,7 @@ $('drawWorks').onclick=e=>{if(lastDraw)vote(lastDraw,'works',e.target)};
 $('drawFlag').onclick=e=>{if(lastDraw)vote(lastDraw,'flag',e.target)};
 function shareCode(code){
  copyRaw('https://muse-invite-board.vercel.app/?c='+code)
-   .then(ok=>toast(ok?'专属分享链接已复制，发给朋友吧':'复制失败，长按手动复制吧'));
+   .then(ok=>toast(ok?T('tLinkCopied'):T('tCopyFail')));
 }
 async function loadMsgs(){
  try{
@@ -427,39 +545,57 @@ async function loadMsgs(){
   const ms=d.messages||[];
   $('msgList').innerHTML=ms.length?ms.map(m=>
    `<div class="recent-row"><span class="t" style="flex:1">${escHtml(m.text)}</span><span class="b">${relTime(m.ts)}</span></div>`
-  ).join(''):'<div class="empty">还没有留言，来抢沙发吧</div>';
- }catch{$('msgList').innerHTML='<div class="empty">留言加载失败，刷新试试</div>'}
+  ).join(''):'<div class="empty">'+T('emptyMsg')+'</div>';
+ }catch{$('msgList').innerHTML='<div class="empty">'+T('msgLoadFail')+'</div>'}
 }
 $('msgBtn').onclick=async()=>{
  const t=$('msgInput').value.trim();
- if(t.length<2){toast('多写几个字吧');return}
+ if(t.length<2){toast(T('tWriteMore'));return}
  const r=await fetch(API+'/api/messages',{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({text:t})});
  const d=await r.json();
- if(!r.ok){toast(d.error||'留言失败');return}
- toast('留言成功');$('msgInput').value='';loadMsgs();
+ if(!r.ok){toast(d.error||T('tMsgFail'));return}
+ toast(T('tMsgOk'));$('msgInput').value='';loadMsgs();
 };
-$('copyDrawBtn').onclick=()=>{const c=$('drawCode').textContent;if(/^[A-Z0-9]{6}$/.test(c))copy(c);else toast('先抽一个吧')};
+$('copyDrawBtn').onclick=()=>{const c=$('drawCode').textContent;if(/^[A-Z0-9]{6}$/.test(c))copy(c);else toast(T('tDrawFirst'))};
 $('submitBtn').onclick=async()=>{
  const code=$('codeInput').value.trim().toUpperCase();
- if(!/^[A-Z0-9]{6}$/.test(code)){toast('格式不对，应为6位字母/数字');return}
+ if(!/^[A-Z0-9]{6}$/.test(code)){toast(T('tBadFormat'));return}
  const token=(window.turnstile&&turnstile.getResponse())||'';
- if(!token){toast('请先完成人机验证');return}
+ if(!token){toast(T('tNeedHuman'));return}
  const r=await fetch(API+'/api/submit',{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({code,token})});
  const d=await r.json();
  if(window.turnstile)turnstile.reset();
- if(!r.ok)toast(d.error||'提交失败');else{toast('贡献成功，感谢！');$('codeInput').value='';load()}
+ if(!r.ok)toast(d.error||T('tSubmitFail'));else{toast(T('tSubmitted'));$('codeInput').value='';load()}
 };
-const SHARE_TEXT='🎟️ 搭了个 Muse 邀请码共享站，方便大家领码、分享码\n✅ 点一下随机抽一个邀请码，先到先得\n✅ 有多余的码欢迎贡献出来，帮更多人上车\n🫶欢迎转发给需要的朋友\nmuse-invite-board.vercel.app';
+function shareText(){
+ if(LANG==='zh')return '🎟️ 搭了个 Muse 邀请码共享站，领码、分享码都免费\n✅ 点一下随机抽一个邀请码，先到先得\n✅ 有多余的码欢迎贡献出来，帮更多人上车\n🔑 我的邀请码 J93R39 也在池子里，来领\n🫶欢迎转发给需要的朋友\nmuse-invite-board.vercel.app';
+ return '🎟️ Built a Muse invite-code board — free codes for everyone\n✅ Tap to draw a random invite code, first come first served\n✅ Have spare codes? Share them and help more people get on board\n🔑 My code J93R39 is in the pool too\n🫶Forward to friends who need one\nmuse-invite-board.vercel.app';
+}
+function xText(){
+ if(LANG==='zh')return '🎟️ 搭了个 Muse 邀请码共享站，领码、分享码都免费\n✅ 点一下随机抽一个邀请码，先到先得\n✅ 有多余的码欢迎贡献出来，帮更多人上车\n🔑 我的邀请码 J93R39 也在池子里\nvia @styrigx';
+ return '🎟️ Built a Muse invite-code board — free codes for everyone\n✅ Tap to draw a random invite code\n✅ Have spare codes? Share them\n🔑 My code J93R39 is in the pool too\nvia @styrigx';
+}
 $('shareBtn').onclick=async()=>{
  const url='https://muse-invite-board.vercel.app/';
- if(navigator.share){try{await navigator.share({title:'Muse 邀请码共享站',text:SHARE_TEXT,url});return}catch(e){if(e&&e.name==='AbortError')return}}
- if(await copyRaw(SHARE_TEXT))toast('分享文案已复制，去粘贴给朋友吧');else toast('复制失败，长按手动复制吧');
+ if(navigator.share){try{await navigator.share({title:T('docTitle'),text:shareText(),url});return}catch(e){if(e&&e.name==='AbortError')return}}
+ if(await copyRaw(shareText()))toast(T('tShareCopied'));else toast(T('tCopyFail'));
 };
-const X_TEXT='🎟️ 搭了个 Muse 邀请码共享站，方便大家领码、分享码\n✅ 点一下随机抽一个邀请码，先到先得\n✅ 有多余的码欢迎贡献出来，帮更多人上车\n🫶欢迎转发给需要的朋友\nvia @styrigx';
 $('xShareBtn').onclick=()=>{
- const url='https://x.com/intent/post?text='+encodeURIComponent(X_TEXT)+'&url='+encodeURIComponent('https://muse-invite-board.vercel.app/');
+ const url='https://x.com/intent/post?text='+encodeURIComponent(xText())+'&url='+encodeURIComponent('https://muse-invite-board.vercel.app/');
  window.open(url,'_blank','noopener');
 };
+$('langBtn').onclick=()=>applyLang(LANG==='zh'?'en':'zh');
+$('privacyLink').onclick=e=>{e.preventDefault();showPrivacy(true)};
+$('privacyLink2').onclick=e=>{e.preventDefault();showPrivacy(true)};
+$('privacyBack').onclick=()=>showPrivacy(false);
+// 初始化：英文默认
+document.documentElement.lang='en';
+document.title=T('docTitle');
+$('langBtn').textContent=T('langBtn');
+document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=T(el.dataset.i18n)});
+document.querySelectorAll('[data-i18n-html]').forEach(el=>{el.innerHTML=T(el.dataset.i18nHtml)});
+document.querySelectorAll('[data-i18n-ph]').forEach(el=>{el.placeholder=T(el.dataset.i18nPh)});
+renderFaq();
 load();
 </script>
 </body>
