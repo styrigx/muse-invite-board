@@ -18,127 +18,162 @@
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <style>
 :root{
-  --bg:#070b16; --card:rgba(255,255,255,.045); --line:rgba(255,255,255,.09);
-  --txt:#eef2ff; --dim:#93a0b8; --acc:#a78bfa; --acc2:#67e8f9; --gold:#e8c15a;
+  --paper:#f5f2ea; --card:#fffdf8; --ink:#211c14; --muted:#8d8674;
+  --line:#e6dfcd; --pill:#211c14; --onpill:#f5f2ea;
+  --green:#2e7a3c; --green-bg:#ebf3e7; --green-line:#d2e2cc;
+  --red:#b3402e;
+  --serif:Georgia,'Times New Roman','Songti SC','STSong','Noto Serif SC',serif;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,monospace;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-body{
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
-  background:var(--bg); color:var(--txt); min-height:100vh; -webkit-tap-highlight-color:transparent;
-}
-.bg{position:fixed;inset:0;z-index:-1;overflow:hidden}
-.bg::before{content:"";position:absolute;width:640px;height:640px;left:-180px;top:-180px;
-  background:radial-gradient(circle,rgba(167,139,250,.22),transparent 65%);filter:blur(10px)}
-.bg::after{content:"";position:absolute;width:560px;height:560px;right:-160px;top:30%;
-  background:radial-gradient(circle,rgba(103,232,249,.14),transparent 65%);filter:blur(10px)}
-.wrap{max-width:760px;margin:0 auto;padding:0 18px 60px}
-nav{display:flex;align-items:center;padding:20px 2px}
-.logo{font-weight:800;font-size:17px;letter-spacing:1px}
-.logo span{background:linear-gradient(120deg,var(--acc),var(--acc2));-webkit-background-clip:text;background-clip:text;color:transparent}
-.hero{text-align:center;padding:34px 0 8px}
-.hero h1{font-size:34px;font-weight:800;letter-spacing:2px;
-  background:linear-gradient(120deg,#fff 20%,#c7d2fe 60%,var(--acc2));-webkit-background-clip:text;background-clip:text;color:transparent}
-.hero p{color:var(--dim);font-size:14px;margin-top:12px;line-height:1.9}
-.hero .slogan{color:#e8c15a;font-size:16px;font-weight:700;letter-spacing:4px;margin-top:14px}
-.stats{display:flex;gap:12px;margin:26px 0}
-.stat{flex:1;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 8px;text-align:center;backdrop-filter:blur(8px)}
-.stat b{font-size:24px;display:block;background:linear-gradient(120deg,var(--acc),var(--acc2));-webkit-background-clip:text;background-clip:text;color:transparent}
-.stat small{color:var(--dim);font-size:12px}
-.steps{display:flex;gap:10px;margin:2px 0 22px}
-.step{flex:1;text-align:center;font-size:12px;color:var(--dim);line-height:1.8;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 6px}
-.step .n{display:flex;align-items:center;justify-content:center;width:26px;height:26px;margin:0 auto 8px;border-radius:50%;background:linear-gradient(120deg,var(--acc),var(--acc2));color:#0b0620;font-size:13px;font-weight:800}
-.fresh{display:flex;gap:10px;overflow-x:auto;padding:2px 2px 8px;-webkit-overflow-scrolling:touch}
-.fresh::-webkit-scrollbar{display:none}
-.chip{flex:0 0 auto;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;text-align:center;cursor:pointer}
-.chip .c{font-family:ui-monospace,Menlo,monospace;font-weight:800;letter-spacing:2px;font-size:15px}
-.chip .b{font-size:11px;color:var(--dim);margin-top:4px}
-.faq details{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:10px;overflow:hidden}
-.faq summary{padding:15px 18px;font-size:14px;font-weight:700;cursor:pointer;list-style:none}
-.faq summary::-webkit-details-marker{display:none}
-.faq summary::after{content:"+";float:right;color:var(--acc);font-weight:800}
-.faq details[open] summary::after{content:"–"}
-.faq .a{padding:0 18px 16px;font-size:13px;color:var(--dim);line-height:1.9}
-.faq .a b{color:#c7d2fe}
-.draw-tip{text-align:center;color:var(--dim);font-size:12px;margin-top:12px}
-.drawbox{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:26px 20px;text-align:center;margin-bottom:22px;backdrop-filter:blur(8px)}
-.draw-code{font-size:46px;font-weight:800;letter-spacing:10px;min-height:66px;font-family:ui-monospace,Menlo,monospace;
-  background:linear-gradient(120deg,#fff,var(--acc2));-webkit-background-clip:text;background-clip:text;color:transparent}
-.draw-code:empty::before{content:"– – –";opacity:.25;-webkit-text-fill-color:var(--dim);background:none}
-.draw-btns{display:flex;gap:10px;justify-content:center;margin-top:14px}
-.btn{border:none;cursor:pointer;font-size:16px;font-weight:700;color:#0b0620;
-  padding:14px 34px;border-radius:99px;background:linear-gradient(120deg,var(--acc),var(--acc2));
-  box-shadow:0 8px 28px rgba(167,139,250,.35);transition:transform .15s}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);
+  min-height:100vh;-webkit-tap-highlight-color:transparent;
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:660px;margin:0 auto;padding:0 20px 64px}
+/* 顶栏 */
+nav{display:flex;align-items:center;padding:18px 2px;border-bottom:1px solid var(--line)}
+.wordmark{font-family:var(--serif);font-size:20px;font-weight:700;letter-spacing:2px}
+.navbtn{border:none;background:none;color:var(--muted);font-size:14px;cursor:pointer;
+  font-family:var(--sans);display:inline-flex;align-items:center;gap:5px}
+.navbtn:active{color:var(--ink)}
+/* 主视觉 */
+.hero{text-align:center;padding:56px 0 10px}
+.eyebrow{font-size:12px;letter-spacing:6px;color:var(--muted);margin-bottom:18px;text-indent:6px}
+.hero h1{font-family:var(--serif);font-size:42px;font-weight:700;line-height:1.5;letter-spacing:6px;text-indent:6px}
+.hero .sub{color:var(--muted);font-size:14px;margin-top:18px;line-height:2}
+.hero .sub b{color:var(--ink);font-weight:600}
+/* 统计 */
+.stats{display:flex;margin:30px 0 6px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.stat{flex:1;text-align:center;padding:16px 4px}
+.stat+.stat{border-left:1px solid var(--line)}
+.stat b{font-family:var(--serif);font-size:24px;font-weight:700;display:block}
+.stat small{color:var(--muted);font-size:12px;letter-spacing:1px}
+/* 三步 */
+.steps{display:flex;gap:8px;margin:26px 0 8px}
+.step{flex:1;font-size:12px;color:var(--muted);line-height:1.9;text-align:left}
+.step .n{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;
+  border:1px solid var(--line);border-radius:50%;font-family:var(--serif);font-size:13px;
+  color:var(--ink);margin-bottom:8px;background:var(--card)}
+.step b{display:block;color:var(--ink);font-size:13px;font-weight:600;margin-bottom:2px}
+/* 抽码 */
+.drawbox{background:var(--card);border:1px solid var(--line);border-radius:24px;
+  padding:34px 24px 28px;text-align:center;margin:30px 0 8px;
+  box-shadow:0 12px 40px rgba(60,50,30,.07)}
+.draw-code{font-family:var(--mono);font-size:48px;font-weight:700;letter-spacing:12px;text-indent:12px;
+  min-height:70px;color:var(--ink)}
+.draw-code:empty::before{content:"······";opacity:.18;letter-spacing:12px}
+.draw-checked{margin-top:6px;min-height:22px}
+.draw-btns{display:flex;gap:10px;justify-content:center;margin-top:16px}
+.btn{border:none;cursor:pointer;font-family:var(--serif);font-size:16px;letter-spacing:3px;text-indent:3px;
+  color:var(--onpill);padding:15px 40px;border-radius:99px;background:var(--pill);
+  transition:transform .15s, opacity .15s}
 .btn:active{transform:scale(.96)}
-.btn-ghost{border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--txt);
-  padding:14px 26px;border-radius:99px;font-size:15px;cursor:pointer}
+.btn-ghost{border:1px solid var(--line);background:var(--card);color:var(--ink);
+  padding:15px 28px;border-radius:99px;font-size:14px;cursor:pointer;font-family:var(--sans)}
 .btn-ghost:active{transform:scale(.96)}
-.sec-t{font-size:15px;font-weight:700;margin:26px 0 14px;display:flex;align-items:center;gap:8px}
-.sec-t::after{content:"";flex:1;height:1px;background:var(--line)}
-.upd{font-size:12px;color:var(--dim);font-weight:400;white-space:nowrap}
-.mq-hint{font-size:12px;color:var(--dim);margin:-6px 0 10px}
-.marquee{max-height:360px;overflow:hidden;position:relative;touch-action:pan-y;
-  -webkit-mask-image:linear-gradient(180deg,transparent,#000 24px,#000 calc(100% - 24px),transparent);
-  mask-image:linear-gradient(180deg,transparent,#000 24px,#000 calc(100% - 24px),transparent)}
+.draw-tip{text-align:center;color:var(--muted);font-size:12px;margin-top:14px;line-height:1.8}
+/* 分区标题 */
+.sec-t{font-family:var(--serif);font-size:20px;font-weight:700;letter-spacing:2px;
+  margin:44px 0 6px;display:flex;align-items:baseline;gap:10px}
+.sec-t .upd{font-family:var(--sans);font-size:12px;color:var(--muted);font-weight:400;letter-spacing:0}
+.mq-hint{font-size:12px;color:var(--muted);margin:0 0 12px}
+/* 最新分享 */
+.fresh{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 10px;-webkit-overflow-scrolling:touch}
+.fresh::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;background:var(--card);border:1px solid var(--line);border-radius:99px;
+  padding:10px 18px;text-align:center;cursor:pointer;transition:border-color .15s}
+.chip:active{border-color:var(--ink)}
+.chip .c{font-family:var(--mono);font-weight:700;letter-spacing:2px;font-size:15px}
+.chip .b{font-size:11px;color:var(--muted);margin-top:3px}
+/* 跑马灯 */
+.marquee{max-height:340px;overflow:hidden;position:relative;touch-action:pan-y;
+  -webkit-mask-image:linear-gradient(180deg,transparent,#000 28px,#000 calc(100% - 28px),transparent);
+  mask-image:linear-gradient(180deg,transparent,#000 28px,#000 calc(100% - 28px),transparent)}
 .marquee-track.run{animation-name:mqY;animation-timing-function:linear;animation-iteration-count:infinite}
 .marquee-track.paused{animation-play-state:paused}
 .marquee:hover .marquee-track{animation-play-state:paused}
 @keyframes mqY{to{transform:translateY(-50%)}}
-.marquee .code-card{padding:12px 14px}
-.marquee-sm{max-height:210px}
+.marquee .code-card{padding:14px 16px}
+.marquee-sm{max-height:220px}
+/* 码卡 */
 .codes{display:grid;gap:12px}
-.code-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;backdrop-filter:blur(8px)}
-.code-card .row1{display:flex;align-items:center;justify-content:space-between}
-.code-card .c{font-size:22px;font-weight:800;letter-spacing:4px;font-family:ui-monospace,Menlo,monospace}
-.code-card .meta{font-size:12px;color:var(--dim);margin-top:8px}
-.code-card .meta b{color:var(--txt)}
-.code-card .meta .fl{color:#fca5a5}
-.mini{border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--txt);
-  border-radius:10px;padding:8px 16px;font-size:13px;cursor:pointer}
-.mini:active{background:rgba(167,139,250,.18)}
-.vote{display:flex;gap:8px;margin-top:12px}
-.vote button{flex:1;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--txt);
-  border-radius:12px;padding:10px;font-size:13px;cursor:pointer}
-.vote button:active{background:rgba(167,139,250,.18)}
+.code-card{background:var(--card);border:1px solid var(--line);border-radius:18px;
+  padding:18px;box-shadow:0 4px 18px rgba(60,50,30,.05)}
+.code-card .row1{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.code-card .c{font-family:var(--mono);font-size:22px;font-weight:700;letter-spacing:4px}
+.code-card .meta{font-size:12px;color:var(--muted);margin-top:10px;line-height:2}
+.code-card .meta b{color:var(--ink)}
+.code-card .meta .fl{color:var(--red)}
+.checked{display:inline-block;font-size:11px;color:var(--green);background:var(--green-bg);
+  border:1px solid var(--green-line);border-radius:99px;padding:2px 9px;margin-left:6px;
+  vertical-align:1px;white-space:nowrap;letter-spacing:1px}
+.mini{border:1px solid var(--line);background:var(--card);color:var(--ink);
+  border-radius:99px;padding:8px 16px;font-size:13px;cursor:pointer;font-family:var(--sans);
+  white-space:nowrap}
+.mini:active{background:#f0ebdd}
+.vote{display:flex;gap:8px;margin-top:14px}
+.vote button{flex:1;border:1px solid var(--line);background:var(--card);color:var(--ink);
+  border-radius:99px;padding:11px;font-size:13px;cursor:pointer;font-family:var(--sans)}
+.vote button:active{background:#f0ebdd}
 .vote button:disabled{opacity:.4}
-.empty{text-align:center;color:var(--dim);font-size:14px;padding:30px 0;line-height:2}
+.empty{text-align:center;color:var(--muted);font-size:14px;padding:32px 0;line-height:2}
+/* 分享 / 留言输入 */
 .share{display:flex;gap:10px}
-.share input{flex:1;background:rgba(0,0,0,.3);border:1px solid var(--line);border-radius:14px;
-  padding:14px;font-size:18px;letter-spacing:6px;text-align:center;color:var(--txt);
-  font-family:ui-monospace,Menlo,monospace;outline:none;min-width:0;text-transform:uppercase}
-.share input:focus{border-color:var(--acc)}
-.share .btn{flex:0 0 104px;padding:14px 0;font-size:15px}
-footer{text-align:center;color:var(--dim);font-size:12px;margin-top:44px;line-height:2}
-footer a{color:var(--acc);text-decoration:none}
-.toast{position:fixed;left:50%;bottom:32px;transform:translateX(-50%);background:#1c2540;
-  border:1px solid var(--line);padding:13px 22px;border-radius:14px;font-size:14px;display:none;
-  z-index:9;max-width:92vw;text-align:center;box-shadow:0 8px 28px rgba(0,0,0,.5)}
-/* 最近发放 & 留言板 */
+.share input{flex:1;background:var(--card);border:1px solid var(--line);border-radius:99px;
+  padding:15px 20px;font-size:17px;letter-spacing:6px;text-align:center;color:var(--ink);
+  font-family:var(--mono);outline:none;min-width:0;text-transform:uppercase}
+.share input:focus{border-color:var(--ink)}
+.share .btn{flex:0 0 108px;padding:15px 0;font-size:15px}
+/* 最近发放 & 留言 */
 .recent{display:grid;gap:8px}
 .recent-row{display:flex;align-items:center;gap:10px;background:var(--card);
-  border:1px solid var(--line);border-radius:12px;padding:10px 14px}
-.recent-row .c{font-family:ui-monospace,Menlo,monospace;font-weight:800;letter-spacing:2px;font-size:15px}
-.recent-row .t{flex:1;color:var(--dim);font-size:12px;line-height:1.6}
-.recent-row .b{color:var(--dim);font-size:11px;white-space:nowrap}
+  border:1px solid var(--line);border-radius:14px;padding:12px 16px}
+.recent-row .c{font-family:var(--mono);font-weight:700;letter-spacing:2px;font-size:15px}
+.recent-row .t{flex:1;color:var(--muted);font-size:12px;line-height:1.8}
+.recent-row .b{color:var(--muted);font-size:11px;white-space:nowrap}
 /* 专属分享横幅 */
-.shared-banner{background:linear-gradient(135deg,rgba(167,139,250,.14),rgba(103,232,249,.08));
-  border:1px solid rgba(167,139,250,.4);border-radius:18px;padding:20px;margin-top:14px;text-align:center}
-.shared-banner .sb-t{font-size:13px;color:var(--dim);margin-bottom:10px}
-.shared-banner .sb-c{font-size:40px;font-weight:800;letter-spacing:8px;font-family:ui-monospace,Menlo,monospace;margin-bottom:14px}
-.shared-banner .vote{max-width:380px;margin:0 auto}
-#drawFeedback{max-width:380px;margin:14px auto 0}
+.shared-banner{background:var(--card);border:1px solid var(--ink);border-radius:22px;
+  padding:26px 20px;margin-top:20px;text-align:center;box-shadow:0 12px 40px rgba(60,50,30,.08)}
+.shared-banner .sb-t{font-size:13px;color:var(--muted);margin-bottom:12px;letter-spacing:2px}
+.shared-banner .sb-c{font-family:var(--mono);font-size:42px;font-weight:700;letter-spacing:10px;
+  text-indent:10px;margin-bottom:16px}
+.shared-banner .vote{max-width:400px;margin:0 auto}
+#drawFeedback{max-width:400px;margin:16px auto 0}
+/* FAQ */
+.faq{border-top:1px solid var(--line)}
+.faq details{border-bottom:1px solid var(--line)}
+.faq summary{padding:17px 4px;font-size:15px;font-weight:600;cursor:pointer;list-style:none;
+  display:flex;justify-content:space-between;align-items:center;gap:12px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";color:var(--muted);font-size:20px;font-weight:400;flex:0 0 auto}
+.faq details[open] summary::after{content:"–"}
+.faq .a{padding:0 4px 18px;font-size:13px;color:var(--muted);line-height:2}
+.faq .a b{color:var(--ink)}
+footer{text-align:center;color:var(--muted);font-size:12px;margin-top:52px;line-height:2.2;
+  border-top:1px solid var(--line);padding-top:24px;letter-spacing:1px}
+footer a{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.toast{position:fixed;left:50%;bottom:32px;transform:translateX(-50%);background:var(--pill);
+  color:var(--onpill);padding:13px 24px;border-radius:99px;font-size:14px;display:none;
+  z-index:9;max-width:92vw;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.turnstile-wrap{display:flex;justify-content:center;margin-top:14px}
+@media(max-width:520px){
+  .hero h1{font-size:34px}
+  .draw-code{font-size:38px;letter-spacing:8px;text-indent:8px}
+  .step{font-size:11px}
+}
 </style>
 </head>
 <body>
-<div class="bg"></div>
 <div class="wrap">
   <nav>
-    <div class="logo">🎟️ <span>Muse 邀请码</span></div>
-    <button class="mini" id="shareBtn" style="margin-left:auto">📤 分享</button>
-    <button class="mini" id="xShareBtn" style="margin-left:8px"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" style="vertical-align:-1px;margin-right:5px"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>发到 X</button>
+    <div class="wordmark">Muse 码池</div>
+    <button class="navbtn" id="shareBtn" style="margin-left:auto">分享</button>
+    <button class="navbtn" id="xShareBtn" style="margin-left:16px"><svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" style="margin-right:2px"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>发到 X</button>
   </nav>
 
   <div class="shared-banner" id="sharedBanner" style="display:none">
-    <div class="sb-t">🔗 朋友分享给你的邀请码</div>
+    <div class="sb-t">朋友分享给你的邀请码</div>
     <div class="sb-c" id="sbCode">------</div>
     <div class="vote">
       <button id="sbCopy">复制</button>
@@ -148,62 +183,64 @@ footer a{color:var(--acc);text-decoration:none}
   </div>
 
   <div class="hero">
-    <h1>邀请码共享站</h1>
-    <p class="slogan">拿一个码，留一个码。</p>
-    <p>一个邀请码 = <b style="color:#c7d2fe">10 亿 Muse token</b>，免费领<br>专治码不好找、找到的已失效；自己的码没地方分享</p>
-  </div>
-
-  <div class="stats">
-    <div class="stat"><b id="stCodes">–</b><small>码池邀请码</small></div>
-    <div class="stat"><b id="stDraws">–</b><small>累计抽取</small></div>
-    <div class="stat"><b id="stWorks">–</b><small>人说能用 👍</small></div>
-    <div class="stat"><b id="stToday">–</b><small>今日新增</small></div>
-  </div>
-
-  <div class="steps">
-    <div class="step"><span class="n">1</span>抽一个码<br>免费领</div>
-    <div class="step"><span class="n">2</span>去 Muse App<br>设置里兑换拿 token</div>
-    <div class="step"><span class="n">3</span>回来点 👍<br>或标记失效</div>
+    <div class="eyebrow">陌生人互助 · 邀请码池</div>
+    <h1>拿一个码，<br>留一个码。</h1>
+    <p class="sub">一个邀请码 = <b>10 亿 Muse token</b>，免费领<br>专治码不好找、找到的已失效；自己的码没地方分享</p>
   </div>
 
   <div class="drawbox">
     <div class="draw-code" id="drawCode"></div>
+    <div class="draw-checked"><span class="checked" id="drawChecked" style="display:none">✓ 已核验</span></div>
     <div class="draw-btns">
-      <button class="btn" id="drawBtn">🎲 抽一个邀请码</button>
+      <button class="btn" id="drawBtn">抽一个邀请码</button>
       <button class="btn-ghost" id="copyDrawBtn">复制</button>
     </div>
     <div class="vote" id="drawFeedback" style="display:none">
       <button id="drawWorks">👍 能用</button>
       <button id="drawFlag">标记失效</button>
     </div>
-    <div class="draw-tip">抽到自动复制🎲 加权轮换：被抽得少的码优先，新码不会被瞬间领爆</div>
+    <div class="draw-tip">加权轮换：被抽得少的码优先，新码不会被瞬间领爆<br>抽到自动复制</div>
   </div>
 
-  <div class="sec-t">🆕 最新分享</div>
+  <div class="stats">
+    <div class="stat"><b id="stCodes">–</b><small>在轮转</small></div>
+    <div class="stat"><b id="stDraws">–</b><small>累计抽取</small></div>
+    <div class="stat"><b id="stWorks">–</b><small>能用反馈</small></div>
+    <div class="stat"><b id="stToday">–</b><small>今日新增</small></div>
+  </div>
+
+  <div class="steps">
+    <div class="step"><span class="n">1</span><b>抽一个码</b>免费领，先到先得</div>
+    <div class="step"><span class="n">2</span><b>去 Muse 兑换</b>App 设置里兑换拿 token</div>
+    <div class="step"><span class="n">3</span><b>回来反馈</b>点 👍 或标记失效</div>
+  </div>
+
+  <div class="sec-t">最新分享</div>
   <div class="fresh" id="fresh"><div class="empty">加载中…</div></div>
 
-  <div class="sec-t">💝 分享你的邀请码</div>
+  <div class="sec-t">分享你的邀请码</div>
   <div class="share">
     <input id="codeInput" maxlength="6" placeholder="输入6位邀请码" autocomplete="off">
     <button class="btn" id="submitBtn">提交</button>
   </div>
-  <div style="display:flex;justify-content:center;margin-top:12px"><div class="cf-turnstile" data-sitekey="0x4AAAAAAFF0szN9GPU7gxiw" data-theme="dark"></div></div>
+  <div class="turnstile-wrap"><div class="cf-turnstile" data-sitekey="0x4AAAAAAFF0szN9GPU7gxiw" data-theme="light"></div></div>
 
-  <div class="sec-t">📋 网友分享的码<span class="upd" id="updTime"></span></div>
-  <div class="mq-hint">🎠 随机 10 个滚动展示 · 被标记的不展示 · 按住暂停点选</div>
+  <div class="sec-t">网友分享的码<span class="upd" id="updTime"></span></div>
+  <div class="mq-hint">随机 10 个滚动展示 · 被标记的不展示 · 按住暂停点选</div>
   <div class="marquee" id="codeMarquee"><div class="marquee-track" id="mqTrack"><div class="empty">加载中…</div></div></div>
 
-  <div class="sec-t">🕘 最近发放</div>
+  <div class="sec-t">最近发放</div>
+  <div class="mq-hint">最近 7 次发放记录 · 自动滚动</div>
   <div class="marquee marquee-sm" id="recentMarquee"><div class="marquee-track" id="recentTrack"><div class="empty">加载中…</div></div></div>
 
-  <div class="sec-t">💬 留言板</div>
+  <div class="sec-t">留言板</div>
   <div class="recent" id="msgList" style="margin-bottom:12px"><div class="empty">加载中…</div></div>
   <div class="share">
-    <input id="msgInput" maxlength="200" placeholder="留句话吧（200字内，每IP限一条）" autocomplete="off" style="letter-spacing:0;font-size:14px;text-align:left;text-transform:none;font-family:inherit">
+    <input id="msgInput" maxlength="200" placeholder="留句话吧（200字内，每IP限一条）" autocomplete="off" style="letter-spacing:0;font-size:14px;text-align:left;text-transform:none;font-family:var(--sans)">
     <button class="btn" id="msgBtn">留言</button>
   </div>
 
-  <div class="sec-t">❓ 常见问题</div>
+  <div class="sec-t">常见问题</div>
   <div class="faq">
     <details>
       <summary>领到的码有什么用？</summary>
@@ -212,6 +249,10 @@ footer a{color:var(--acc);text-decoration:none}
     <details>
       <summary>抽码是什么机制？</summary>
       <div class="a">不是纯随机。<b>每个码被抽走的次数会被记录，被抽得少的码优先被抽到</b>——新贡献的码不会被瞬间领爆，老码也不会沉底。</div>
+    </details>
+    <details>
+      <summary>「✓ 已核验」是什么意思？</summary>
+      <div class="a">有人点过 <b>「👍 能用」</b> 的码会打上已核验标记，说明它大概率还能用。优先选带标记的码，抽到后也回来点一下，帮下一个人。</div>
     </details>
     <details>
       <summary>为什么码显示用不了？</summary>
@@ -242,6 +283,7 @@ footer a{color:var(--acc);text-decoration:none}
 <script>
 const API="https://muse-invite-board.styrigx.workers.dev";
 const $=id=>document.getElementById(id);
+let lastCodes=[];
 function toast(m){const t=$('toast');t.textContent=m;t.style.display='block';clearTimeout(t._h);t._h=setTimeout(()=>t.style.display='none',2200)}
 async function copy(t){try{await navigator.clipboard.writeText(t);toast('已复制：'+t)}catch{const i=document.createElement('input');i.value=t;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove();toast('已复制：'+t)}}
 async function copyRaw(t){try{await navigator.clipboard.writeText(t);return true}catch{try{const i=document.createElement('input');i.value=t;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove();return true}catch{return false}}}
@@ -254,10 +296,11 @@ function relTime(ts){
  const d=new Date(ts);
  return (d.getMonth()+1)+'月'+d.getDate()+'日 '+d.getHours()+':'+String(d.getMinutes()).padStart(2,'0')+'更新';
 }
+function checkedBadge(c){return (c.works||0)>=1?' <span class="checked">✓ 已核验</span>':''}
 function cardHTML(c){
  return `<div class="code-card" data-code="${c.code}" data-works="${c.works||0}" data-flags="${c.flags||0}">
    <div class="row1"><span class="c">${c.code}</span><span><button class="mini" onclick="shareCode('${c.code}')" style="margin-right:6px">🔗</button><button class="mini" onclick="copy('${c.code}')">复制</button></span></div>
-   <div class="meta">${c.by} · 👍 <b>${c.works}</b>人说能用 · 已抽${c.draws}次 · <span class="fl">${c.flags}</span>人标记</div>
+   <div class="meta">${c.by} · 👍 <b>${c.works}</b>人说能用 · 已抽${c.draws}次 · <span class="fl">${c.flags}</span>人标记${checkedBadge(c)}</div>
    <div class="vote">
      <button class="w" onclick="vote('${c.code}','works',this)">👍 能用</button>
      <button class="f" onclick="vote('${c.code}','flag',this)">标记失效</button>
@@ -283,6 +326,7 @@ async function load(){
  const r=await fetch(API+'/api/codes');const d=await r.json();
  const box=$('mqTrack'),mq=$('codeMarquee');
  const cs=d.codes||[];
+ lastCodes=cs;
  $('stCodes').textContent=cs.length;
  $('stDraws').textContent=cs.reduce((s,c)=>s+(c.draws||0),0);
  $('stWorks').textContent=cs.reduce((s,c)=>s+(c.works||0),0);
@@ -307,7 +351,7 @@ async function load(){
   rtrack.innerHTML=rc.map(r=>{
    const hit=cs.find(c=>c.code===r.code);
    const left=hit?(hit.estLeft!=null?hit.estLeft:Math.max(0,25-(hit.draws||0))):'–';
-   return `<div class="recent-row"><span class="c">${r.code}</span><span class="t">${relTime(r.ts)} · 预估剩余 ~${left} 次</span><button class="mini" onclick="copy('${r.code}')">复制</button></div>`;
+   return `<div class="recent-row"><span class="c">${r.code}</span><span class="t">${relTime(r.ts)} · 预估剩余 ~${left} 次${hit?checkedBadge(hit).replace(' <span','<span'):''}</span><button class="mini" onclick="copy('${r.code}')">复制</button></div>`;
   }).join('');
   startMarquee(rtrack,rmq);
  }
@@ -352,6 +396,10 @@ async function vote(code,kind,btn){
    card.dataset.works=d.works||0;card.dataset.flags=d.flags||0;
    const b=card.querySelector('.meta b');if(b)b.textContent=d.works;
    const fl=card.querySelector('.meta .fl');if(fl)fl.textContent=d.flags;
+   if((d.works||0)>=1&&!card.querySelector('.checked')){
+     const meta=card.querySelector('.meta');
+     if(meta)meta.insertAdjacentHTML('beforeend',' <span class="checked">✓ 已核验</span>');
+   }
    card._dw=(d.works||0)-prev;
  });
  const sw=$('stWorks');
@@ -362,6 +410,8 @@ $('drawBtn').onclick=async()=>{
  if(!r.ok){toast(d.error||'抽取失败');return}
  lastDraw=d.code;
  $('drawCode').textContent=d.code;copy(d.code);
+ const hit=lastCodes.find(c=>c.code===d.code);
+ $('drawChecked').style.display=(hit&&(hit.works||0)>=1)?'inline-block':'none';
  $('drawFeedback').style.display='flex';
 };
 let lastDraw='';
