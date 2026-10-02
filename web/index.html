@@ -31,7 +31,6 @@ body{font-family:var(--sans);background:var(--paper);color:var(--ink);
   min-height:100vh;-webkit-tap-highlight-color:transparent;
   -webkit-font-smoothing:antialiased}
 .wrap{max-width:660px;margin:0 auto;padding:0 20px 64px}
-/* 顶栏 */
 nav{display:flex;align-items:center;padding:18px 2px;border-bottom:1px solid var(--line)}
 .wordmark{font-family:var(--serif);font-size:20px;font-weight:700;letter-spacing:2px}
 .navbtn{border:none;background:none;color:var(--muted);font-size:14px;cursor:pointer;
@@ -39,26 +38,22 @@ nav{display:flex;align-items:center;padding:18px 2px;border-bottom:1px solid var
 .navbtn:active{color:var(--ink)}
 .langbtn{border:1px solid var(--line);background:var(--card);border-radius:99px;
   padding:6px 14px;font-size:13px;color:var(--ink);cursor:pointer;font-family:var(--sans)}
-/* 主视觉 */
 .hero{text-align:center;padding:56px 0 10px}
 .eyebrow{font-size:12px;letter-spacing:6px;color:var(--muted);margin-bottom:18px;text-indent:6px}
 .hero h1{font-family:var(--serif);font-size:42px;font-weight:700;line-height:1.5;letter-spacing:6px;text-indent:6px}
 .hero .sub{color:var(--muted);font-size:14px;margin-top:18px;line-height:2}
 .hero .sub b{color:var(--ink);font-weight:600}
-/* 统计 */
 .stats{display:flex;margin:30px 0 6px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .stat{flex:1;text-align:center;padding:16px 4px}
 .stat+.stat{border-left:1px solid var(--line)}
 .stat b{font-family:var(--serif);font-size:24px;font-weight:700;display:block}
 .stat small{color:var(--muted);font-size:12px;letter-spacing:1px}
-/* 三步 */
 .steps{display:flex;gap:8px;margin:26px 0 8px}
 .step{flex:1;font-size:12px;color:var(--muted);line-height:1.9;text-align:left}
 .step .n{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;
   border:1px solid var(--line);border-radius:50%;font-family:var(--serif);font-size:13px;
   color:var(--ink);margin-bottom:8px;background:var(--card)}
 .step b{display:block;color:var(--ink);font-size:13px;font-weight:600;margin-bottom:2px}
-/* 抽码 */
 .drawbox{background:var(--card);border:1px solid var(--line);border-radius:24px;
   padding:34px 24px 28px;text-align:center;margin:30px 0 8px;
   box-shadow:0 12px 40px rgba(60,50,30,.07)}
@@ -75,12 +70,10 @@ nav{display:flex;align-items:center;padding:18px 2px;border-bottom:1px solid var
   padding:15px 28px;border-radius:99px;font-size:14px;cursor:pointer;font-family:var(--sans)}
 .btn-ghost:active{transform:scale(.96)}
 .draw-tip{text-align:center;color:var(--muted);font-size:12px;margin-top:14px;line-height:1.8}
-/* 分区标题 */
 .sec-t{font-family:var(--serif);font-size:20px;font-weight:700;letter-spacing:2px;
   margin:44px 0 6px;display:flex;align-items:baseline;gap:10px}
 .sec-t .upd{font-family:var(--sans);font-size:12px;color:var(--muted);font-weight:400;letter-spacing:0}
 .mq-hint{font-size:12px;color:var(--muted);margin:0 0 12px}
-/* 最新分享 */
 .fresh{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 10px;-webkit-overflow-scrolling:touch}
 .fresh::-webkit-scrollbar{display:none}
 .chip{flex:0 0 auto;background:var(--card);border:1px solid var(--line);border-radius:99px;
@@ -88,7 +81,6 @@ nav{display:flex;align-items:center;padding:18px 2px;border-bottom:1px solid var
 .chip:active{border-color:var(--ink)}
 .chip .c{font-family:var(--mono);font-weight:700;letter-spacing:2px;font-size:15px}
 .chip .b{font-size:11px;color:var(--muted);margin-top:3px}
-/* 跑马灯 */
 .marquee{max-height:340px;overflow:hidden;position:relative;touch-action:pan-y;
   -webkit-mask-image:linear-gradient(180deg,transparent,#000 28px,#000 calc(100% - 28px),transparent);
   mask-image:linear-gradient(180deg,transparent,#000 28px,#000 calc(100% - 28px),transparent)}
@@ -98,7 +90,6 @@ nav{display:flex;align-items:center;padding:18px 2px;border-bottom:1px solid var
 @keyframes mqY{to{transform:translateY(-50%)}}
 .marquee .code-card{padding:14px 16px}
 .marquee-sm{max-height:220px}
-/* 码卡 */
 .codes{display:grid;gap:12px}
 .code-card{background:var(--card);border:1px solid var(--line);border-radius:18px;
   padding:18px;box-shadow:0 4px 18px rgba(60,50,30,.05)}
@@ -120,21 +111,18 @@ nav{display:flex;align-items:center;padding:18px 2px;border-bottom:1px solid var
 .vote button:active{background:#f0ebdd}
 .vote button:disabled{opacity:.4}
 .empty{text-align:center;color:var(--muted);font-size:14px;padding:32px 0;line-height:2}
-/* 分享 / 留言输入 */
 .share{display:flex;gap:10px}
 .share input{flex:1;background:var(--card);border:1px solid var(--line);border-radius:99px;
   padding:15px 20px;font-size:17px;letter-spacing:6px;text-align:center;color:var(--ink);
   font-family:var(--mono);outline:none;min-width:0;text-transform:uppercase}
 .share input:focus{border-color:var(--ink)}
 .share .btn{flex:0 0 108px;padding:15px 0;font-size:15px}
-/* 最近发放 & 留言 */
 .recent{display:grid;gap:8px}
 .recent-row{display:flex;align-items:center;gap:10px;background:var(--card);
   border:1px solid var(--line);border-radius:14px;padding:12px 16px}
 .recent-row .c{font-family:var(--mono);font-weight:700;letter-spacing:2px;font-size:15px}
 .recent-row .t{flex:1;color:var(--muted);font-size:12px;line-height:1.8}
 .recent-row .b{color:var(--muted);font-size:11px;white-space:nowrap}
-/* 专属分享横幅 */
 .shared-banner{background:var(--card);border:1px solid var(--ink);border-radius:22px;
   padding:26px 20px;margin-top:20px;text-align:center;box-shadow:0 12px 40px rgba(60,50,30,.08)}
 .shared-banner .sb-t{font-size:13px;color:var(--muted);margin-bottom:12px;letter-spacing:2px}
@@ -142,7 +130,6 @@ nav{display:flex;align-items:center;padding:18px 2px;border-bottom:1px solid var
   text-indent:10px;margin-bottom:16px}
 .shared-banner .vote{max-width:400px;margin:0 auto}
 #drawFeedback{max-width:400px;margin:16px auto 0}
-/* FAQ */
 .faq{border-top:1px solid var(--line)}
 .faq details{border-bottom:1px solid var(--line)}
 .faq summary{padding:17px 4px;font-size:15px;font-weight:600;cursor:pointer;list-style:none;
@@ -152,7 +139,6 @@ nav{display:flex;align-items:center;padding:18px 2px;border-bottom:1px solid var
 .faq details[open] summary::after{content:"–"}
 .faq .a{padding:0 4px 18px;font-size:13px;color:var(--muted);line-height:2}
 .faq .a b{color:var(--ink)}
-/* 隐私页 */
 .privacy-body{background:var(--card);border:1px solid var(--line);border-radius:18px;
   padding:24px;font-size:14px;line-height:2.1;color:var(--muted)}
 .privacy-body p{margin-bottom:14px}
@@ -177,21 +163,9 @@ footer a{color:var(--ink);text-decoration:underline;text-underline-offset:3px;cu
   <nav>
     <div class="wordmark" data-i18n="wordmark">Muse Pool</div>
     <button class="langbtn" id="langBtn" style="margin-left:auto">中文</button>
-    <button class="navbtn" id="shareBtn" style="margin-left:12px" data-i18n="navShare">Share</button>
-    <button class="navbtn" id="xShareBtn" style="margin-left:14px"><svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" style="margin-right:2px"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg><span data-i18n="navX">Post to X</span></button>
   </nav>
 
   <div id="mainView">
-    <div class="shared-banner" id="sharedBanner" style="display:none">
-      <div class="sb-t" data-i18n="sbTitle">A code shared with you by a friend</div>
-      <div class="sb-c" id="sbCode">------</div>
-      <div class="vote">
-        <button id="sbCopy" data-i18n="copy">Copy</button>
-        <button id="sbWorks" data-i18n="works">👍 Works</button>
-        <button id="sbFlag" data-i18n="flag">Flag as dead</button>
-      </div>
-    </div>
-
     <div class="hero">
       <div class="eyebrow" data-i18n="eyebrow">A community pool, run by strangers</div>
       <h1 data-i18n-html="heroTitle">Take one,<br>leave one.</h1>
@@ -254,8 +228,7 @@ footer a{color:var(--ink);text-decoration:underline;text-underline-offset:3px;cu
     <div class="faq" id="faqBox"></div>
 
     <footer>
-      <span data-i18n="poweredBy">Powered by</span> Cloudflare<br>
-      <a id="privacyLink" data-i18n="privacy">Privacy</a> · <a href="https://x.com/styrigx" target="_blank" rel="noopener">@styrigx</a> · <span data-i18n="casual">updates when I feel like it</span>
+      <a id="privacyLink" data-i18n="privacy">Privacy</a>
     </footer>
   </div>
 
@@ -264,8 +237,7 @@ footer a{color:var(--ink);text-decoration:underline;text-underline-offset:3px;cu
     <div class="sec-t" data-i18n="privacy">Privacy</div>
     <div class="privacy-body" id="privacyBody"></div>
     <footer>
-      <span data-i18n="poweredBy">Powered by</span> Cloudflare<br>
-      <a id="privacyLink2" data-i18n="privacy">Privacy</a> · <a href="https://x.com/styrigx" target="_blank" rel="noopener">@styrigx</a> · <span data-i18n="casual">updates when I feel like it</span>
+      <a id="privacyLink2" data-i18n="privacy">Privacy</a>
     </footer>
   </div>
 </div>
@@ -279,7 +251,7 @@ let lastCodes=[];
 
 const I18N={
 en:{
-  wordmark:"Muse Pool", navShare:"Share", navX:"Post to X", langBtn:"中文",
+  wordmark:"Muse Pool", langBtn:"中文",
   eyebrow:"A community pool, run by strangers",
   heroTitle:"Take one,<br>leave one.",
   heroSub:"One code = <b>1 billion Muse tokens</b>, free to claim<br>Codes are hard to find, and found ones are often dead — share yours here",
@@ -294,8 +266,7 @@ en:{
   secCodes:"Community codes", mqHint:"10 random codes on rotation · flagged ones hidden · hold to pause & pick",
   secRecent:"Recently handed out", recentHint:"Latest 7 draws · auto-scrolling",
   secMsg:"Message board", msgPh:"Leave a note (200 chars, one per IP)", msgBtn:"Post", secFaq:"FAQ",
-  sbTitle:"A code shared with you by a friend",
-  privacy:"Privacy", back:"Back", poweredBy:"Powered by", casual:"updates when I feel like it",
+  privacy:"Privacy", back:"Back",
   docTitle:"Muse Invite Code Board",
   tCopied:"Copied: ", tDrawFirst:"Draw one first",
   tBadFormat:"Invalid format — 6 letters/digits", tNeedHuman:"Please complete the human check first",
@@ -303,9 +274,6 @@ en:{
   tWriteMore:"Write a bit more", tMsgFail:"Couldn't post", tMsgOk:"Posted!",
   tOpFail:"Failed", tFeedbackGot:"Feedback received",
   tFlagged:"Flagged — removed from display", tUnpaused:"Thanks! It's back on display", tThanks:"Thanks!",
-  tLinkCopied:"Share link copied — send it to a friend",
-  tCopyFail:"Copy failed — long-press to copy manually",
-  tShareCopied:"Share text copied",
   emptyBoard:"The board is empty<br>Share the first one 👆",
   emptyFlagged:"All displayed codes were flagged<br>Try the draw above 👆",
   emptyRecent:"No draws yet", emptyMsg:"No messages yet — grab the first seat",
@@ -320,10 +288,10 @@ en:{
     ["Is this site official?","No. It's a tiny independent board run by volunteers. <b>We never collect your Muse or any account login info</b>. All codes are free — never pay for one."],
     ["Will my code get shared too?","Yes. Your code joins the rotation the moment you submit it — <b>take one, leave one</b>. That's how the pool keeps turning."]
   ],
-  privacyBody:"<p><b>Privacy</b> — this is a tiny community board, so the data story is short.</p><p><b>No accounts.</b> We never ask for your Muse login or any credentials.</p><p><b>What you submit:</b> invite codes you share, votes (works / flag), and board messages. Codes and messages are public by design.</p><p><b>What we log:</b> your IP address is used only for rate limiting and the one-message-per-IP rule on the board. No profiling, no cross-site tracking.</p><p><b>Where it lives:</b> codes in Supabase (Singapore), recent draws and messages in Cloudflare KV, the page itself on Vercel. Standard Cloudflare request logs apply.</p><p><b>Cookies:</b> none of ours. Cloudflare's human check (Turnstile) may set its own.</p><p><b>Deletion:</b> codes flagged 3 times are auto-hidden by daily cleanup. Messages can't be edited — post carefully.</p><p>Questions? Find me on X: <a href=\"https://x.com/styrigx\" target=\"_blank\" rel=\"noopener\">@styrigx</a></p>"
+  privacyBody:"<p><b>Privacy</b> — this is a tiny community board, so the data story is short.</p><p><b>No accounts.</b> We never ask for your Muse login or any credentials.</p><p><b>What you submit:</b> invite codes you share, votes (works / flag), and board messages. Codes and messages are public by design.</p><p><b>What we log:</b> your IP address is used only for rate limiting and the one-message-per-IP rule on the board. No profiling, no cross-site tracking.</p><p><b>Where it lives:</b> codes in Supabase (Singapore), recent draws and messages in Cloudflare KV, the page itself on Vercel. Standard Cloudflare request logs apply.</p><p><b>Cookies:</b> none of ours. Cloudflare's human check (Turnstile) may set its own.</p><p><b>Deletion:</b> codes flagged 3 times are auto-hidden by daily cleanup. Messages can't be edited — post carefully.</p>"
 },
 zh:{
-  wordmark:"Muse 码池", navShare:"分享", navX:"发到 X", langBtn:"EN",
+  wordmark:"Muse 码池", langBtn:"EN",
   eyebrow:"陌生人互助 · 邀请码池",
   heroTitle:"拿一个码，<br>留一个码。",
   heroSub:"一个邀请码 = <b>10 亿 Muse token</b>，免费领<br>专治码不好找、找到的已失效；自己的码没地方分享",
@@ -338,8 +306,7 @@ zh:{
   secCodes:"网友分享的码", mqHint:"随机 10 个滚动展示 · 被标记的不展示 · 按住暂停点选",
   secRecent:"最近发放", recentHint:"最近 7 次发放记录 · 自动滚动",
   secMsg:"留言板", msgPh:"留句话吧（200字内，每IP限一条）", msgBtn:"留言", secFaq:"常见问题",
-  sbTitle:"朋友分享给你的邀请码",
-  privacy:"隐私政策", back:"返回", poweredBy:"由", casual:"随缘更新",
+  privacy:"隐私政策", back:"返回",
   docTitle:"Muse 邀请码共享站",
   tCopied:"已复制：", tDrawFirst:"先抽一个吧",
   tBadFormat:"格式不对，应为6位字母/数字", tNeedHuman:"请先完成人机验证",
@@ -347,9 +314,6 @@ zh:{
   tWriteMore:"多写几个字吧", tMsgFail:"留言失败", tMsgOk:"留言成功",
   tOpFail:"操作失败", tFeedbackGot:"已收到反馈",
   tFlagged:"已标记，该码撤下展示", tUnpaused:"感谢！该码已恢复展示", tThanks:"感谢反馈！",
-  tLinkCopied:"专属分享链接已复制，发给朋友吧",
-  tCopyFail:"复制失败，长按手动复制吧",
-  tShareCopied:"分享文案已复制，去粘贴给朋友吧",
   emptyBoard:"板子还是空的<br>来贡献第一个吧 👆",
   emptyFlagged:"展示的码都被标记撤下了<br>用上面的抽码试试 👆",
   emptyRecent:"还没有发放记录", emptyMsg:"还没有留言，来抢沙发吧",
@@ -364,13 +328,12 @@ zh:{
     ["这个站是官方的吗？","不是。这是网友自发维护的独立小站，<b>不收集你的 Muse 或任何账号登录信息</b>，所有码免费，也别为邀请码花钱。"],
     ["我贡献的码也会被分享吗？","会。你提交的码会立刻进入轮换池——<b>拿一个码，留一个码</b>，池子就是这样转起来的。"]
   ],
-  privacyBody:"<p><b>隐私政策</b>——这是个小小的网友互助板，数据故事很短。</p><p><b>无需注册。</b>我们从不索取你的 Muse 登录信息或任何账号密码。</p><p><b>你提交的：</b>分享的邀请码、投票（能用 / 失效标记）、留言板留言。码和留言本来就是公开的。</p><p><b>我们记录的：</b>IP 地址仅用于频率限制和留言板“每 IP 一条”的规则。不画像、不跨站追踪。</p><p><b>数据在哪：</b>码存在 Supabase（新加坡），最近发放和留言存在 Cloudflare KV，页面在 Vercel。Cloudflare 的标准请求日志照常。</p><p><b>Cookie：</b>我们自己不设。Cloudflare 的人机验证（Turnstile）可能会设它自己的。</p><p><b>删除：</b>被标记 3 次的码会被每日清理自动隐藏。留言不能编辑——下笔前想好。</p><p>有问题？去 X 找我：<a href=\"https://x.com/styrigx\" target=\"_blank\" rel=\"noopener\">@styrigx</a></p>"
+  privacyBody:"<p><b>隐私政策</b>——这是个小小的网友互助板，数据故事很短。</p><p><b>无需注册。</b>我们从不索取你的 Muse 登录信息或任何账号密码。</p><p><b>你提交的：</b>分享的邀请码、投票（能用 / 失效标记）、留言板留言。码和留言本来就是公开的。</p><p><b>我们记录的：</b>IP 地址仅用于频率限制和留言板“每 IP 一条”的规则。不画像、不跨站追踪。</p><p><b>数据在哪：</b>码存在 Supabase（新加坡），最近发放和留言存在 Cloudflare KV，页面在 Vercel。Cloudflare 的标准请求日志照常。</p><p><b>Cookie：</b>我们自己不设。Cloudflare 的人机验证（Turnstile）可能会设它自己的。</p><p><b>删除：</b>被标记 3 次的码会被每日清理自动隐藏。留言不能编辑——下笔前想好。</p>"
 }};
 
 function T(k){return (I18N[LANG]&&I18N[LANG][k]!==undefined)?I18N[LANG][k]:I18N.en[k]}
 function toast(m){const t=$('toast');t.textContent=m;t.style.display='block';clearTimeout(t._h);t._h=setTimeout(()=>t.style.display='none',2200)}
 async function copy(t){try{await navigator.clipboard.writeText(t);toast(T('tCopied')+t)}catch{const i=document.createElement('input');i.value=t;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove();toast(T('tCopied')+t)}}
-async function copyRaw(t){try{await navigator.clipboard.writeText(t);return true}catch{try{const i=document.createElement('input');i.value=t;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove();return true}catch{return false}}}
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const t=a[i];a[i]=a[j];a[j]=t}return a}
 function relTime(ts){
  if(!ts)return'';
@@ -393,7 +356,7 @@ function metaLine(c){
 }
 function cardHTML(c){
  return `<div class="code-card" data-code="${c.code}" data-works="${c.works||0}" data-flags="${c.flags||0}">
-   <div class="row1"><span class="c">${c.code}</span><span><button class="mini" onclick="shareCode('${c.code}')" style="margin-right:6px">🔗</button><button class="mini" onclick="copy('${c.code}')">${T('copy')}</button></span></div>
+   <div class="row1"><span class="c">${c.code}</span><span><button class="mini" onclick="copy('${c.code}')">${T('copy')}</button></span></div>
    <div class="meta">${metaLine(c)}${(c.works||0)>=1?checkedBadge():''}</div>
    <div class="vote">
      <button class="w" onclick="vote('${c.code}','works',this)">${T('works')}</button>
@@ -402,7 +365,6 @@ function cardHTML(c){
  </div>`;
 }
 function escHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-// 纵向跑马灯：内容超出可视区才滚动，复制一份实现无缝循环；触摸/悬停暂停
 function startMarquee(track,box){
  track.classList.remove('run','paused');track.style.animationDuration='';
  if(track.scrollHeight>box.clientHeight+4){
@@ -447,19 +409,15 @@ async function load(){
  $('stDraws').textContent=cs.reduce((s,c)=>s+(c.draws||0),0);
  $('stWorks').textContent=cs.reduce((s,c)=>s+(c.works||0),0);
  $('stToday').textContent=cs.filter(c=>(c.ts||0)>Date.now()-864e5).length;
- // 更新时间：取码池最新动态
  const maxts=cs.reduce((m,c)=>Math.max(m,c.ts||0),0);
  $('updTime').textContent=maxts?' · '+relTime(maxts):'';
- // 跑马灯：随机取 10 个未被标记的码，自动滚动展示（被标记的只撤下展示，仍在抽取池）
  const active=cs.filter(c=>!c.paused);
  if(!cs.length){box.innerHTML='<div class="empty">'+T('emptyBoard')+'</div>'}
  else if(!active.length){box.innerHTML='<div class="empty">'+T('emptyFlagged')+'</div>'}
  else{box.innerHTML=shuffle([...active]).slice(0,10).map(cardHTML).join('');startMarquee(box,mq)}
- // 最新分享：按提交时间取最新 8 条
  const fresh=[...cs].sort((a,b)=>(b.ts||0)-(a.ts||0)).slice(0,8);
  $('fresh').innerHTML=fresh.map(c=>
  `<div class="chip" onclick="copy('${c.code}')"><div class="c">${c.code}</div><div class="b">${c.by}</div></div>`).join('');
- // 最近发放：取 7 条，纵向跑马灯滚动
  const rc=(d.recent||[]).slice(0,7);
  const rtrack=$('recentTrack'),rmq=$('recentMarquee');
  if(!rc.length){rtrack.innerHTML='<div class="empty">'+T('emptyRecent')+'</div>'}
@@ -473,16 +431,6 @@ async function load(){
   }).join('');
   startMarquee(rtrack,rmq);
  }
- // 专属分享链接：?c=CODE 打开时高亮展示
- const shared=new URLSearchParams(location.search).get('c');
- if(shared&&/^[A-Z0-9]{6}$/.test(shared)&&cs.some(c=>c.code===shared)){
-   $('sbCode').textContent=shared;
-   $('sbCopy').onclick=()=>copy(shared);
-   $('sbWorks').onclick=e=>vote(shared,'works',e.target);
-   $('sbFlag').onclick=e=>vote(shared,'flag',e.target);
-   $('sharedBanner').style.display='block';
-   setTimeout(()=>$('sharedBanner').scrollIntoView({behavior:'smooth',block:'center'}),400);
- }
  loadMsgs();
 }
 async function vote(code,kind,btn){
@@ -494,7 +442,6 @@ async function vote(code,kind,btn){
  if(d.ignored){toast(T('tFeedbackGot'));return}
  if(kind==='flag'){
   toast(T('tFlagged'));
-  // 原地移除跑马灯里所有同码卡片（滚动有双份），不整页刷新；码仍在抽取池
   document.querySelectorAll('.code-card[data-code="'+code+'"]').forEach(el=>el.remove());
   const track=$('mqTrack');
   if(!track.querySelector('.code-card')){
@@ -503,10 +450,8 @@ async function vote(code,kind,btn){
   }
   return;
  }
- // kind==='works'
- if(d.unpaused){toast(T('tUnpaused'));load();return} // 恢复展示后整列刷新，把它请回跑马灯
+ if(d.unpaused){toast(T('tUnpaused'));load();return}
  toast(T('tThanks'));
- // 原地更新所有同码卡片（跑马灯里有双份）：不整列重排，页面不跳动
  const cards=document.querySelectorAll('.code-card[data-code="'+code+'"]');
  const dw=(d.works||0);
  cards.forEach(card=>{
@@ -535,10 +480,6 @@ $('drawBtn').onclick=async()=>{
 let lastDraw='';
 $('drawWorks').onclick=e=>{if(lastDraw)vote(lastDraw,'works',e.target)};
 $('drawFlag').onclick=e=>{if(lastDraw)vote(lastDraw,'flag',e.target)};
-function shareCode(code){
- copyRaw('https://muse-invite-board.vercel.app/?c='+code)
-   .then(ok=>toast(ok?T('tLinkCopied'):T('tCopyFail')));
-}
 async function loadMsgs(){
  try{
   const r=await fetch(API+'/api/messages');const d=await r.json();
@@ -567,28 +508,10 @@ $('submitBtn').onclick=async()=>{
  if(window.turnstile)turnstile.reset();
  if(!r.ok)toast(d.error||T('tSubmitFail'));else{toast(T('tSubmitted'));$('codeInput').value='';load()}
 };
-function shareText(){
- if(LANG==='zh')return '🎟️ 搭了个 Muse 邀请码共享站，领码、分享码都免费\n✅ 点一下随机抽一个邀请码，先到先得\n✅ 有多余的码欢迎贡献出来，帮更多人上车\n🔑 我的邀请码 J93R39 也在池子里，来领\n🫶欢迎转发给需要的朋友\nmuse-invite-board.vercel.app';
- return '🎟️ Built a Muse invite-code board — free codes for everyone\n✅ Tap to draw a random invite code, first come first served\n✅ Have spare codes? Share them and help more people get on board\n🔑 My code J93R39 is in the pool too\n🫶Forward to friends who need one\nmuse-invite-board.vercel.app';
-}
-function xText(){
- if(LANG==='zh')return '🎟️ 搭了个 Muse 邀请码共享站，领码、分享码都免费\n✅ 点一下随机抽一个邀请码，先到先得\n✅ 有多余的码欢迎贡献出来，帮更多人上车\n🔑 我的邀请码 J93R39 也在池子里\nvia @styrigx';
- return '🎟️ Built a Muse invite-code board — free codes for everyone\n✅ Tap to draw a random invite code\n✅ Have spare codes? Share them\n🔑 My code J93R39 is in the pool too\nvia @styrigx';
-}
-$('shareBtn').onclick=async()=>{
- const url='https://muse-invite-board.vercel.app/';
- if(navigator.share){try{await navigator.share({title:T('docTitle'),text:shareText(),url});return}catch(e){if(e&&e.name==='AbortError')return}}
- if(await copyRaw(shareText()))toast(T('tShareCopied'));else toast(T('tCopyFail'));
-};
-$('xShareBtn').onclick=()=>{
- const url='https://x.com/intent/post?text='+encodeURIComponent(xText())+'&url='+encodeURIComponent('https://muse-invite-board.vercel.app/');
- window.open(url,'_blank','noopener');
-};
 $('langBtn').onclick=()=>applyLang(LANG==='zh'?'en':'zh');
 $('privacyLink').onclick=e=>{e.preventDefault();showPrivacy(true)};
 $('privacyLink2').onclick=e=>{e.preventDefault();showPrivacy(true)};
 $('privacyBack').onclick=()=>showPrivacy(false);
-// 初始化：英文默认
 document.documentElement.lang='en';
 document.title=T('docTitle');
 $('langBtn').textContent=T('langBtn');
