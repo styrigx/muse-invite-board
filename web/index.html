@@ -70,6 +70,25 @@ nav{display:flex;align-items:center;padding:18px 2px;border-bottom:1px solid var
   padding:15px 28px;border-radius:99px;font-size:14px;cursor:pointer;font-family:var(--sans)}
 .btn-ghost:active{transform:scale(.96)}
 .draw-tip{text-align:center;color:var(--muted);font-size:12px;margin-top:14px;line-height:1.8}
+.impact{text-align:center;margin:28px 0 0;font-family:var(--serif);font-size:18px;letter-spacing:1px;color:var(--muted)}
+.impact b{font-size:24px;color:var(--ink)}
+.askbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+  background:var(--green-bg);border:1px solid var(--green-line);border-radius:16px;
+  padding:13px 16px;margin-top:16px;font-size:13.5px}
+.askbar .mono{font-family:var(--mono);font-weight:700;letter-spacing:2px}
+.ask-btns{display:flex;gap:6px;flex-wrap:wrap}
+.form-hint{text-align:center;font-size:12.5px;color:var(--muted);min-height:18px;margin-top:9px}
+.form-hint.ok{color:var(--green)}
+.form-hint.bad{color:var(--red)}
+#submitBtn{opacity:.45}
+#submitBtn.ready{opacity:1}
+.sheet-mask{position:fixed;inset:0;background:rgba(30,25,15,.45);display:flex;
+  align-items:flex-end;justify-content:center;z-index:20}
+.sheet{background:var(--paper);border-radius:24px 24px 0 0;padding:30px 24px 42px;width:100%;
+  max-width:660px;text-align:center;box-shadow:0 -12px 40px rgba(60,50,30,.18)}
+.sheet-t{font-family:var(--serif);font-size:20px;font-weight:700;letter-spacing:2px}
+.sheet-code{font-family:var(--mono);font-size:40px;font-weight:700;letter-spacing:10px;text-indent:10px;margin:16px 0 10px}
+.sheet-m{color:var(--muted);font-size:14px;line-height:1.9;margin-bottom:22px}
 .sec-t{font-family:var(--serif);font-size:20px;font-weight:700;letter-spacing:2px;
   margin:44px 0 6px;display:flex;align-items:baseline;gap:10px}
 .sec-t .upd{font-family:var(--sans);font-size:12px;color:var(--muted);font-weight:400;letter-spacing:0}
@@ -172,6 +191,8 @@ footer a{color:var(--ink);text-decoration:underline;text-underline-offset:3px;cu
       <p class="sub" data-i18n-html="heroSub">One code = <b>1 billion Muse tokens</b>, free to claim<br>Codes are hard to find, and found ones are often dead — share yours here</p>
     </div>
 
+    <div class="impact" id="impactLine" style="display:none"></div>
+
     <div class="drawbox">
       <div class="draw-code" id="drawCode"></div>
       <div class="draw-checked"><span class="checked" id="drawChecked" style="display:none" data-i18n="verified">✓ Verified</span></div>
@@ -185,6 +206,8 @@ footer a{color:var(--ink);text-decoration:underline;text-underline-offset:3px;cu
       </div>
       <div class="draw-tip" data-i18n-html="drawTip">Weighted rotation: codes drawn less often go first, new codes won't get burned instantly<br>Auto-copied on draw</div>
     </div>
+
+    <div class="askbar" id="askBar" style="display:none"></div>
 
     <div class="stats">
       <div class="stat"><b id="stCodes">–</b><small data-i18n="stCodes">In rotation</small></div>
@@ -204,9 +227,10 @@ footer a{color:var(--ink);text-decoration:underline;text-underline-offset:3px;cu
 
     <div class="sec-t" data-i18n="secShare">Share your invite code</div>
     <div class="share">
-      <input id="codeInput" maxlength="6" data-i18n-ph="codePh" placeholder="Enter a 6-character code" autocomplete="off">
+      <input id="codeInput" maxlength="6" data-i18n-ph="codePh" placeholder="Enter a 6-character code" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="send">
       <button class="btn" id="submitBtn" data-i18n="submit">Submit</button>
     </div>
+    <div class="form-hint" id="codeHint"></div>
     <div class="turnstile-wrap"><div class="cf-turnstile" data-sitekey="0x4AAAAAAFF0szN9GPU7gxiw" data-theme="light"></div></div>
 
     <div class="sec-t"><span data-i18n="secCodes">Community codes</span><span class="upd" id="updTime"></span></div>
@@ -241,6 +265,14 @@ footer a{color:var(--ink);text-decoration:underline;text-underline-offset:3px;cu
     </footer>
   </div>
 </div>
+<div class="sheet-mask" id="sheetMask" style="display:none">
+  <div class="sheet">
+    <div class="sheet-t" data-i18n="sheetTitle">Thanks for sharing!</div>
+    <div class="sheet-code" id="sheetCode"></div>
+    <div class="sheet-m" data-i18n="sheetMsg">Your code is in the rotation now, waiting for the next person.</div>
+    <button class="btn" id="sheetOk" data-i18n="sheetOk">Got it</button>
+  </div>
+</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -263,10 +295,13 @@ en:{
   step2t:"Redeem in Muse", step2d:"Redeem tokens in the app settings",
   step3t:"Report back", step3d:"Tap 👍 or flag as dead",
   secFresh:"Fresh shares", secShare:"Share your invite code", codePh:"Enter a 6-character code", submit:"Submit",
-  secCodes:"Community codes", mqHint:"10 random codes on rotation · flagged ones hidden · hold to pause & pick",
+  secCodes:"Community codes", mqHint:"Picked by how likely they still work · flagged ones hidden · hold to pause & pick",
   secRecent:"Recently handed out", recentHint:"Latest 7 draws · auto-scrolling",
   secMsg:"Message board", msgPh:"Leave a note (200 chars, one per IP)", msgBtn:"Post", secFaq:"FAQ",
   privacy:"Privacy", back:"Back",
+  askQ:"Did this code work?", notYet:"Not yet",
+  fmtHint:"6 letters/digits", dupHint:"This code is already in the pool", okHint:"Looks good — hit Submit",
+  sheetTitle:"Thanks for sharing!", sheetMsg:"Your code is in the rotation now, waiting for the next person.", sheetOk:"Got it",
   docTitle:"Muse Invite Code Board",
   tCopied:"Copied: ", tDrawFirst:"Draw one first",
   tBadFormat:"Invalid format — 6 letters/digits", tNeedHuman:"Please complete the human check first",
@@ -303,10 +338,13 @@ zh:{
   step2t:"去 Muse 兑换", step2d:"App 设置里兑换拿 token",
   step3t:"回来反馈", step3d:"点 👍 或标记失效",
   secFresh:"最新分享", secShare:"分享你的邀请码", codePh:"输入6位邀请码", submit:"提交",
-  secCodes:"网友分享的码", mqHint:"随机 10 个滚动展示 · 被标记的不展示 · 按住暂停点选",
+  secCodes:"网友分享的码", mqHint:"按能用可能性选码展示 · 被标记的不展示 · 按住暂停点选",
   secRecent:"最近发放", recentHint:"最近 7 次发放记录 · 自动滚动",
   secMsg:"留言板", msgPh:"留句话吧（200字内，每IP限一条）", msgBtn:"留言", secFaq:"常见问题",
   privacy:"隐私政策", back:"返回",
+  askQ:"刚才那个码能用吗？", notYet:"还没试",
+  fmtHint:"应为 6 位字母/数字", dupHint:"这个码已经在池子里了", okHint:"没问题，可以贡献",
+  sheetTitle:"贡献成功", sheetMsg:"你的码已进入轮换池，正在等下一个人。", sheetOk:"好",
   docTitle:"Muse 邀请码共享站",
   tCopied:"已复制：", tDrawFirst:"先抽一个吧",
   tBadFormat:"格式不对，应为6位字母/数字", tNeedHuman:"请先完成人机验证",
@@ -333,8 +371,7 @@ zh:{
 
 function T(k){return (I18N[LANG]&&I18N[LANG][k]!==undefined)?I18N[LANG][k]:I18N.en[k]}
 function toast(m){const t=$('toast');t.textContent=m;t.style.display='block';clearTimeout(t._h);t._h=setTimeout(()=>t.style.display='none',2200)}
-async function copy(t){try{await navigator.clipboard.writeText(t);toast(T('tCopied')+t)}catch{const i=document.createElement('input');i.value=t;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove();toast(T('tCopied')+t)}}
-function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const t=a[i];a[i]=a[j];a[j]=t}return a}
+async function copy(t){if(/^[A-Z0-9]{6}$/.test(t))savePending(t);try{await navigator.clipboard.writeText(t);toast(T('tCopied')+t)}catch{const i=document.createElement('input');i.value=t;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove();toast(T('tCopied')+t)}}
 function relTime(ts){
  if(!ts)return'';
  const m=Math.floor((Date.now()-ts)/60000);
@@ -350,6 +387,32 @@ function relTime(ts){
  return 'updated '+(d.getMonth()+1)+'/'+d.getDate()+' '+d.getHours()+':'+String(d.getMinutes()).padStart(2,'0');
 }
 function checkedBadge(){return ' <span class="checked">'+T('verified')+'</span>'}
+function estLeftOf(c){const used=(c.works||0)+Math.max(0,(c.draws||0)-(c.works||0))*0.5;return Math.max(0,Math.round(25-used))}
+function probW(c){return 1+(c.works>0?2:0)+Math.min(c.works||0,5)*0.4+estLeftOf(c)/25+((c.ts||0)>Date.now()-864e5?0.5:0)}
+function pickWeighted(pool,n){
+ const arr=[...pool];const out=[];
+ while(arr.length&&out.length<n){
+  const tot=arr.reduce((s,c)=>s+probW(c),0);let r=Math.random()*tot,i=0;
+  while(i<arr.length-1){r-=probW(arr[i]);if(r<=0)break;i++}
+  out.push(arr.splice(i,1)[0]);
+ }
+ return out.sort((a,b)=>probW(b)-probW(a));
+}
+function savePending(code){try{localStorage.setItem('ib-pending',JSON.stringify({code,ts:Date.now()}))}catch{}}
+function readPending(){try{const p=JSON.parse(localStorage.getItem('ib-pending')||'null');if(!p||!p.code)return null;if(Date.now()-p.ts>864e5){localStorage.removeItem('ib-pending');return null}return p}catch{return null}}
+function clearPending(){try{localStorage.removeItem('ib-pending')}catch{}}
+let askShown=false;
+function renderAsk(){
+ if(askShown)return;const p=readPending();if(!p)return;
+ const bar=$('askBar');if(!bar)return;
+ bar.innerHTML=`<span>${T('askQ')} <span class="mono">${p.code}</span></span><span class="ask-btns"><button class="mini" id="askYes">${T('works')}</button><button class="mini" id="askNo">${T('flag')}</button><button class="mini" id="askSkip">${T('notYet')}</button></span>`;
+ bar.style.display='flex';askShown=true;
+ $('askYes').onclick=e=>{vote(p.code,'works',e.target);clearPending();bar.style.display='none'};
+ $('askNo').onclick=e=>{vote(p.code,'flag',e.target);clearPending();bar.style.display='none'};
+ $('askSkip').onclick=()=>{clearPending();bar.style.display='none'};
+}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)renderAsk()});
+window.addEventListener('focus',renderAsk);
 function metaLine(c){
  if(LANG==='zh')return `${c.by} · 👍 <b>${c.works}</b>人说能用 · 已抽${c.draws}次 · <span class="fl">${c.flags}</span>人标记`;
  return `${c.by} · 👍 <b>${c.works}</b> said it works · drawn ${c.draws}× · <span class="fl">${c.flags}</span> flags`;
@@ -409,12 +472,18 @@ async function load(){
  $('stDraws').textContent=cs.reduce((s,c)=>s+(c.draws||0),0);
  $('stWorks').textContent=cs.reduce((s,c)=>s+(c.works||0),0);
  $('stToday').textContent=cs.filter(c=>(c.ts||0)>Date.now()-864e5).length;
+ const tw=cs.reduce((s,c)=>s+(c.works||0),0);
+ const imp=$('impactLine');
+ if(tw>0){imp.style.display='block';imp.innerHTML=LANG==='zh'
+  ?`已帮大家领到 <b>${tw*10} 亿</b> token · 约 ¥${tw*65}`
+  :`<b>${tw} billion</b> tokens claimed so far · ≈ ¥${tw*65}`}
+ else imp.style.display='none';
  const maxts=cs.reduce((m,c)=>Math.max(m,c.ts||0),0);
  $('updTime').textContent=maxts?' · '+relTime(maxts):'';
  const active=cs.filter(c=>!c.paused);
  if(!cs.length){box.innerHTML='<div class="empty">'+T('emptyBoard')+'</div>'}
  else if(!active.length){box.innerHTML='<div class="empty">'+T('emptyFlagged')+'</div>'}
- else{box.innerHTML=shuffle([...active]).slice(0,10).map(cardHTML).join('');startMarquee(box,mq)}
+ else{box.innerHTML=pickWeighted(active,10).map(cardHTML).join('');startMarquee(box,mq)}
  const fresh=[...cs].sort((a,b)=>(b.ts||0)-(a.ts||0)).slice(0,8);
  $('fresh').innerHTML=fresh.map(c=>
  `<div class="chip" onclick="copy('${c.code}')"><div class="c">${c.code}</div><div class="b">${c.by}</div></div>`).join('');
@@ -424,7 +493,7 @@ async function load(){
  else{
   rtrack.innerHTML=rc.map(r=>{
    const hit=cs.find(c=>c.code===r.code);
-   const left=hit?(hit.estLeft!=null?hit.estLeft:Math.max(0,25-(hit.draws||0))):'–';
+   const left=hit?estLeftOf(hit):'–';
    const badge=(hit&&(hit.works||0)>=1)?checkedBadge().replace(' <span','<span'):'';
    const leftTxt=LANG==='zh'?`预估剩余 ~${left} 次`:`~${left} ${T('usesLeft')}`;
    return `<div class="recent-row"><span class="c">${r.code}</span><span class="t">${relTime(r.ts)} · ${leftTxt}${badge}</span><button class="mini" onclick="copy('${r.code}')">${T('copy')}</button></div>`;
@@ -478,8 +547,8 @@ $('drawBtn').onclick=async()=>{
  $('drawFeedback').style.display='flex';
 };
 let lastDraw='';
-$('drawWorks').onclick=e=>{if(lastDraw)vote(lastDraw,'works',e.target)};
-$('drawFlag').onclick=e=>{if(lastDraw)vote(lastDraw,'flag',e.target)};
+$('drawWorks').onclick=e=>{if(lastDraw){clearPending();vote(lastDraw,'works',e.target)}};
+$('drawFlag').onclick=e=>{if(lastDraw){clearPending();vote(lastDraw,'flag',e.target)}};
 async function loadMsgs(){
  try{
   const r=await fetch(API+'/api/messages');const d=await r.json();
@@ -497,6 +566,21 @@ $('msgBtn').onclick=async()=>{
  if(!r.ok){toast(d.error||T('tMsgFail'));return}
  toast(T('tMsgOk'));$('msgInput').value='';loadMsgs();
 };
+function updateCodeHint(){
+ const v=$('codeInput').value.toUpperCase().replace(/\s+/g,'');
+ if($('codeInput').value!==v)$('codeInput').value=v;
+ const ok=/^[A-Z0-9]{6}$/.test(v);
+ const dup=ok&&lastCodes.some(c=>c.code===v);
+ $('submitBtn').classList.toggle('ready',ok&&!dup);
+ const hint=$('codeHint');
+ hint.textContent=!v?'':dup?T('dupHint'):ok?T('okHint'):T('fmtHint');
+ hint.className='form-hint'+(dup?' bad':ok?' ok':'');
+}
+$('codeInput').addEventListener('input',updateCodeHint);
+function openSheet(code){$('sheetCode').textContent=code;$('sheetMask').style.display='flex'}
+function closeSheet(){$('sheetMask').style.display='none'}
+$('sheetOk').onclick=closeSheet;
+$('sheetMask').addEventListener('click',e=>{if(e.target.id==='sheetMask')closeSheet()});
 $('copyDrawBtn').onclick=()=>{const c=$('drawCode').textContent;if(/^[A-Z0-9]{6}$/.test(c))copy(c);else toast(T('tDrawFirst'))};
 $('submitBtn').onclick=async()=>{
  const code=$('codeInput').value.trim().toUpperCase();
@@ -506,7 +590,7 @@ $('submitBtn').onclick=async()=>{
  const r=await fetch(API+'/api/submit',{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({code,token})});
  const d=await r.json();
  if(window.turnstile)turnstile.reset();
- if(!r.ok)toast(d.error||T('tSubmitFail'));else{toast(T('tSubmitted'));$('codeInput').value='';load()}
+ if(!r.ok)toast(d.error||T('tSubmitFail'));else{$('codeInput').value='';updateCodeHint();openSheet(code);load()}
 };
 $('langBtn').onclick=()=>applyLang(LANG==='zh'?'en':'zh');
 $('privacyLink').onclick=e=>{e.preventDefault();showPrivacy(true)};
@@ -520,6 +604,7 @@ document.querySelectorAll('[data-i18n-html]').forEach(el=>{el.innerHTML=T(el.dat
 document.querySelectorAll('[data-i18n-ph]').forEach(el=>{el.placeholder=T(el.dataset.i18nPh)});
 renderFaq();
 load();
+renderAsk();
 </script>
 </body>
 </html>
