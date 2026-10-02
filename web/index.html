@@ -596,7 +596,7 @@ $('msgBtn').onclick=async()=>{
 let tsWidget=null;
 function ensureTurnstile(){
  if(tsWidget!==null||!window.turnstile)return;
- try{tsWidget=turnstile.render('#tsSlot',{sitekey:'0x4AAAAAAFF0szN9GPU7gxiw',theme:'light'})}catch{}
+ try{tsWidget=turnstile.render('#tsSlot',{sitekey:'0x4AAAAAAFF0szN9GPU7gxiw',theme:'light',appearance:'interaction-only'})}catch{}
 }
 function updateCodeHint(){
  const v=$('codeInput').value.toUpperCase().replace(/\s+/g,'');
@@ -610,7 +610,6 @@ function updateCodeHint(){
  if(ok&&!dup)ensureTurnstile();
 }
 $('codeInput').addEventListener('input',updateCodeHint);
-$('codeInput').addEventListener('focus',ensureTurnstile);
 function openSheet(code){$('sheetCode').textContent=code;$('sheetMask').style.display='flex'}
 function closeSheet(){$('sheetMask').style.display='none'}
 $('sheetOk').onclick=closeSheet;
@@ -625,7 +624,7 @@ async function submitCode(){
  if(!token){toast(T('tNeedHuman'));return}
  const r=await fetch(API+'/api/submit',{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({code,token})});
  const d=await r.json();
- if(tsWidget!==null)turnstile.reset(tsWidget);
+ if(tsWidget!==null){try{turnstile.remove(tsWidget)}catch{}tsWidget=null}
  if(!r.ok)toast(d.error||T('tSubmitFail'));else{$('codeInput').value='';updateCodeHint();openSheet(code);load()}
 }
 $('shareForm').addEventListener('submit',e=>{e.preventDefault();submitCode()});
