@@ -2,7 +2,6 @@
 // 数据：Supabase (Postgres) via REST；限流：KV
 // AI：Workers AI 每天生成一句推荐语（需绑定变量 AI + Cron Trigger: 0 1 * * *）
 // Env: SUPABASE_URL, SUPABASE_ANON_KEY, INVITE_KV, AI
-// 站长: @styrigx
 
 const CODE_RE = /^[A-Z0-9]{6}$/;
 const FLAG_HIDE = 3; // 被标记 3 次后隐藏
@@ -75,11 +74,16 @@ async function sbInsertCode(env, code, by) {
   return r.status; // 201 成功，409 已存在
 }
 // 站长码自举：库里没有就自动种入（仅首次触发一次），之后即融入码池参与加权抽取
+// 署名已去除：站长码在展示层与网友贡献的码无区别
 async function ensureOwnerCode(env) {
   const codes = await getCodes(env);
-  if (!codes.some((c) => c.code === OWNER_CODE)) {
-    await sbInsertCode(env, OWNER_CODE, "站长 @styrigx");
+  const hit = codes.find((c) => c.code === OWNER_CODE);
+  if (!hit) {
+    await sbInsertCode(env, OWNER_CODE, "网友分享");
     return await getCodes(env);
+  }
+  if (hit.by !== "网友分享") {
+    try { await sbPatchCode(env, OWNER_CODE, { by: "网友分享" }); hit.by = "网友分享"; } catch { /* 下次再试 */ }
   }
   return codes;
 }
@@ -94,7 +98,7 @@ async function sbPatchCode(env, code, patch) {
 // 09-28 编码事故自修复：某次 dashboard 部署把 worker.js 的中文字符串弄成乱码，
 // 导致 09-28 18:00 后提交的码 by 字段为乱码。这里幂等地修复，修完即空转。
 async function fixByMojibake(env, codes) {
-  const bad = codes.filter((c) => c.by !== "网友贡献" && c.by !== "站长 @styrigx");
+  const bad = codes.filter((c) => c.by !== "网友贡献" && c.by !== "网友分享");
   for (const c of bad) {
     try {
       await sbPatchCode(env, c.code, { by: "网友贡献" });
@@ -298,8 +302,8 @@ function page(tagline) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="一个邀请码 = 10 亿 Muse token。Muse 邀请码免费共享站：抽码小游戏、网友互助，失效自动隐藏。by @styrigx">
-<title>Muse 邀请码共享站 · by @styrigx</title>
+<meta name="description" content="一个邀请码 = 10 亿 Muse token。Muse 邀请码免费共享站：抽码小游戏、网友互助，失效自动隐藏。">
+<title>Muse 邀请码共享站</title>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <style>
 :root{
@@ -317,7 +321,6 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;bac
   radial-gradient(520px 300px at 92% 8%, rgba(168,85,247,.15), transparent 62%),
   radial-gradient(720px 420px at 50% 112%, rgba(56,189,248,.07), transparent 60%)}
 .wrap{max-width:660px;margin:0 auto;padding:20px 16px 70px;position:relative;z-index:1}
-/* ---------- hero ---------- */
 .hero{text-align:center;padding:30px 8px 20px}
 .hero .ticket{font-size:48px;display:inline-block;filter:drop-shadow(0 6px 18px rgba(168,85,247,.45));animation:float 3.4s ease-in-out infinite}
 @keyframes float{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-9px) rotate(5deg)}}
@@ -329,10 +332,8 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;bac
 .stat{flex:1;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 6px;backdrop-filter:blur(8px)}
 .stat b{display:block;font-size:20px;font-weight:800;font-variant-numeric:tabular-nums}
 .stat span{font-size:11.5px;color:var(--dim)}
-/* ---------- panels & cards ---------- */
 .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;margin-top:14px;backdrop-filter:blur(8px)}
 .panel h2{font-size:14px;margin-bottom:14px;color:var(--dim);font-weight:600;letter-spacing:.5px}
-/* 按钮 */
 button{border:0;border-radius:13px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;color:#fff;background:linear-gradient(135deg,var(--acc1),var(--acc2));box-shadow:0 4px 16px rgba(99,102,241,.35);transition:transform .08s,box-shadow .2s}
 button:active{transform:scale(.97)}
 button.ghost{background:rgba(255,255,255,.06);border:1px solid var(--line);box-shadow:none;flex:0 0 auto;padding:14px 18px;font-weight:600}
@@ -341,10 +342,8 @@ button.ghost{background:rgba(255,255,255,.06);border:1px solid var(--line);box-s
 input{flex:1;min-width:0;background:rgba(0,0,0,.3);border:1px solid var(--line);border-radius:13px;padding:14px;color:#fff;font-size:16px;letter-spacing:2px;text-transform:uppercase;font-family:ui-monospace,Menlo,monospace;outline:none;transition:border .2s}
 input:focus{border-color:var(--acc1)}
 input::placeholder{letter-spacing:0;color:var(--dim);font-family:inherit}
-/* 抽码 */
 .draw-code{font-size:42px;font-weight:800;letter-spacing:8px;text-align:center;padding:20px 0 22px;font-family:ui-monospace,Menlo,monospace;color:#fff;text-indent:8px}
 .draw-code:empty::before{content:"??????";color:#3a4560}
-/* 列表 */
 .grid{display:grid;gap:10px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:15px 16px;backdrop-filter:blur(8px)}
 .card .top{display:flex;align-items:center;justify-content:space-between;gap:10px}
@@ -358,15 +357,12 @@ input::placeholder{letter-spacing:0;color:var(--dim);font-family:inherit}
 .card .acts .f{background:rgba(248,113,113,.10);color:var(--bad);border:1px solid rgba(248,113,113,.22)}
 .card .acts button:disabled{opacity:.5}
 .empty{text-align:center;color:var(--dim);padding:32px 0;font-size:14px;line-height:2}
-/* 步骤 */
 .steps{display:flex;gap:8px;margin-top:2px}
 .step{flex:1;text-align:center;font-size:12px;color:var(--dim);line-height:1.7}
 .step .n{display:flex;align-items:center;justify-content:center;width:26px;height:26px;margin:0 auto 8px;border-radius:50%;background:linear-gradient(135deg,var(--acc1),var(--acc2));color:#fff;font-size:13px;font-weight:800}
-/* toast & footer */
 .toast{position:fixed;left:50%;bottom:32px;transform:translateX(-50%);background:#1c2540;border:1px solid var(--line);padding:13px 22px;border-radius:14px;font-size:14px;display:none;z-index:9;max-width:92vw;text-align:center;box-shadow:0 8px 28px rgba(0,0,0,.5)}
 footer{text-align:center;color:var(--dim);font-size:12px;margin-top:26px;line-height:2}
 footer a{color:#a5b4fc;text-decoration:none}
-/* 桌面端微调 */
 @media(min-width:560px){.hero h1{font-size:28px}}
 </style>
 </head>
@@ -417,7 +413,7 @@ footer a{color:#a5b4fc;text-decoration:none}
   </div>
 </div>
 
-<footer>邀请码由网友自发贡献 · 失效达 3 次标记自动隐藏<br>站长 <a href="https://x.com/styrigx" target="_blank" rel="noopener">@styrigx</a> · 领到能用的欢迎回来点 👍</footer>
+<footer>邀请码由网友自发贡献 · 失效达 3 次标记自动隐藏</footer>
 </div>
 <div class="toast" id="toast"></div>
 <script>
