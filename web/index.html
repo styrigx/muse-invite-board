@@ -15,7 +15,7 @@
 <meta name="twitter:image" content="https://muse-invite-board.vercel.app/og-image.png">
 <link rel="dns-prefetch" href="https://muse-invite-board.styrigx.workers.dev">
 <link rel="preconnect" href="https://muse-invite-board.styrigx.workers.dev">
-<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 <style>
 :root{
   --paper:#f5f2ea; --card:#fffdf8; --ink:#211c14; --muted:#8d8674;
@@ -30,7 +30,7 @@
 body{font-family:var(--sans);background:var(--paper);color:var(--ink);
   min-height:100vh;-webkit-tap-highlight-color:transparent;
   -webkit-font-smoothing:antialiased}
-.wrap{max-width:660px;margin:0 auto;padding:0 20px 64px}
+.wrap{max-width:660px;margin:0 auto;padding:0 20px 220px}
 nav{display:flex;align-items:center;padding:18px 2px;border-bottom:1px solid var(--line)}
 .wordmark{font-family:var(--serif);font-size:20px;font-weight:700;letter-spacing:2px}
 .navbtn{border:none;background:none;color:var(--muted);font-size:14px;cursor:pointer;
@@ -38,7 +38,7 @@ nav{display:flex;align-items:center;padding:18px 2px;border-bottom:1px solid var
 .navbtn:active{color:var(--ink)}
 .langbtn{border:1px solid var(--line);background:var(--card);border-radius:99px;
   padding:6px 14px;font-size:13px;color:var(--ink);cursor:pointer;font-family:var(--sans)}
-.hero{text-align:center;padding:56px 0 10px}
+.hero{text-align:center;padding:56px 0 4px}
 .eyebrow{font-size:12px;letter-spacing:6px;color:var(--muted);margin-bottom:18px;text-indent:6px}
 .hero h1{font-family:var(--serif);font-size:42px;font-weight:700;line-height:1.5;letter-spacing:6px;text-indent:6px}
 .hero .sub{color:var(--muted);font-size:14px;margin-top:18px;line-height:2}
@@ -70,18 +70,36 @@ nav{display:flex;align-items:center;padding:18px 2px;border-bottom:1px solid var
   padding:15px 28px;border-radius:99px;font-size:14px;cursor:pointer;font-family:var(--sans)}
 .btn-ghost:active{transform:scale(.96)}
 .draw-tip{text-align:center;color:var(--muted);font-size:12px;margin-top:14px;line-height:1.8}
-.impact{text-align:center;margin:28px 0 0;font-family:var(--serif);font-size:18px;letter-spacing:1px;color:var(--muted)}
+.impact{text-align:center;margin:16px 0 0;font-family:var(--serif);font-size:18px;letter-spacing:1px;color:var(--muted)}
 .impact b{font-size:24px;color:var(--ink)}
 .askbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
   background:var(--green-bg);border:1px solid var(--green-line);border-radius:16px;
   padding:13px 16px;margin-top:16px;font-size:13.5px}
 .askbar .mono{font-family:var(--mono);font-weight:700;letter-spacing:2px}
 .ask-btns{display:flex;gap:6px;flex-wrap:wrap}
-.form-hint{text-align:center;font-size:12.5px;color:var(--muted);min-height:18px;margin-top:9px}
+.form-hint{text-align:left;font-size:12.5px;color:var(--muted);min-height:18px;padding-left:22px}
 .form-hint.ok{color:var(--green)}
 .form-hint.bad{color:var(--red)}
-#submitBtn{opacity:.45}
-#submitBtn.ready{opacity:1}
+.composer{position:fixed;left:0;right:0;bottom:0;z-index:6;pointer-events:none;
+  padding:0 16px calc(14px + env(safe-area-inset-bottom))}
+.composer form{max-width:660px;margin:0 auto;display:flex;flex-direction:column;gap:8px;pointer-events:auto}
+#tsSlot:empty{display:none}
+#tsSlot{display:flex;justify-content:center}
+.bar{height:60px;padding:0 8px 0 20px;display:flex;align-items:center;gap:12px;
+  background:var(--card);border:1px solid var(--line);border-radius:99px;
+  box-shadow:0 12px 32px rgba(60,50,30,.16)}
+.bar .plus{color:var(--muted);flex:0 0 auto;display:flex;align-items:center}
+.bar input{flex:1;min-width:0;border:none;outline:none;background:transparent;
+  font-size:17px;letter-spacing:5px;font-family:var(--mono);text-transform:uppercase;color:var(--ink)}
+.bar input::placeholder{letter-spacing:0;font-family:var(--sans);font-size:15px;color:var(--muted)}
+.send{width:44px;height:44px;flex:0 0 auto;border:none;border-radius:50%;
+  background:#e7e1cf;color:var(--muted);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:background .2s,color .2s}
+.send.ready{background:var(--pill);color:var(--onpill)}
+.send:active{transform:scale(.94)}
+html[lang="zh-CN"] .eyebrow{letter-spacing:3px;text-indent:3px}
+html[lang="zh-CN"] .hero h1{letter-spacing:3px;text-indent:3px}
+html[lang="zh-CN"] .impact{letter-spacing:0}
 .sheet-mask{position:fixed;inset:0;background:rgba(30,25,15,.45);display:flex;
   align-items:flex-end;justify-content:center;z-index:20}
 .sheet{background:var(--paper);border-radius:24px 24px 0 0;padding:30px 24px 42px;width:100%;
@@ -166,10 +184,9 @@ nav{display:flex;align-items:center;padding:18px 2px;border-bottom:1px solid var
 footer{text-align:center;color:var(--muted);font-size:12px;margin-top:52px;line-height:2.2;
   border-top:1px solid var(--line);padding-top:24px;letter-spacing:1px}
 footer a{color:var(--ink);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
-.toast{position:fixed;left:50%;bottom:32px;transform:translateX(-50%);background:var(--pill);
+.toast{position:fixed;left:50%;top:76px;transform:translateX(-50%);background:var(--pill);
   color:var(--onpill);padding:13px 24px;border-radius:99px;font-size:14px;display:none;
   z-index:9;max-width:92vw;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.25)}
-.turnstile-wrap{display:flex;justify-content:center;margin-top:14px}
 @media(max-width:520px){
   .hero h1{font-size:34px}
   .draw-code{font-size:38px;letter-spacing:8px;text-indent:8px}
@@ -225,14 +242,6 @@ footer a{color:var(--ink);text-decoration:underline;text-underline-offset:3px;cu
     <div class="sec-t" data-i18n="secFresh">Fresh shares</div>
     <div class="fresh" id="fresh"><div class="empty">Loading…</div></div>
 
-    <div class="sec-t" data-i18n="secShare">Share your invite code</div>
-    <div class="share">
-      <input id="codeInput" maxlength="6" data-i18n-ph="codePh" placeholder="Enter a 6-character code" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="send">
-      <button class="btn" id="submitBtn" data-i18n="submit">Submit</button>
-    </div>
-    <div class="form-hint" id="codeHint"></div>
-    <div class="turnstile-wrap"><div class="cf-turnstile" data-sitekey="0x4AAAAAAFF0szN9GPU7gxiw" data-theme="light"></div></div>
-
     <div class="sec-t"><span data-i18n="secCodes">Community codes</span><span class="upd" id="updTime"></span></div>
     <div class="mq-hint" data-i18n="mqHint">10 random codes on rotation · flagged ones hidden · hold to pause &amp; pick</div>
     <div class="marquee" id="codeMarquee"><div class="marquee-track" id="mqTrack"><div class="empty">Loading…</div></div></div>
@@ -265,6 +274,17 @@ footer a{color:var(--ink);text-decoration:underline;text-underline-offset:3px;cu
     </footer>
   </div>
 </div>
+<div class="composer">
+  <form id="shareForm" autocomplete="off">
+    <div class="form-hint" id="codeHint"></div>
+    <div id="tsSlot"></div>
+    <div class="bar">
+      <span class="plus" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
+      <input id="codeInput" maxlength="6" data-i18n-ph="codePh" placeholder="Share your invite code" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="send" aria-label="Invite code">
+      <button type="submit" class="send" id="submitBtn" aria-label="Submit"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg></button>
+    </div>
+  </form>
+</div>
 <div class="sheet-mask" id="sheetMask" style="display:none">
   <div class="sheet">
     <div class="sheet-t" data-i18n="sheetTitle">Thanks for sharing!</div>
@@ -294,7 +314,7 @@ en:{
   step1t:"Draw a code", step1d:"Free, first come first served",
   step2t:"Redeem in Muse", step2d:"Redeem tokens in the app settings",
   step3t:"Report back", step3d:"Tap 👍 or flag as dead",
-  secFresh:"Fresh shares", secShare:"Share your invite code", codePh:"Enter a 6-character code", submit:"Submit",
+  secFresh:"Fresh shares", secShare:"Share your invite code", codePh:"Share your invite code", submit:"Submit",
   secCodes:"Community codes", mqHint:"Picked by how likely they still work · flagged ones hidden · hold to pause & pick",
   secRecent:"Recently handed out", recentHint:"Latest 7 draws · auto-scrolling",
   secMsg:"Message board", msgPh:"Leave a note (200 chars, one per IP)", msgBtn:"Post", secFaq:"FAQ",
@@ -337,7 +357,7 @@ zh:{
   step1t:"抽一个码", step1d:"免费领，先到先得",
   step2t:"去 Muse 兑换", step2d:"App 设置里兑换拿 token",
   step3t:"回来反馈", step3d:"点 👍 或标记失效",
-  secFresh:"最新分享", secShare:"分享你的邀请码", codePh:"输入6位邀请码", submit:"提交",
+  secFresh:"最新分享", secShare:"分享你的邀请码", codePh:"贴上你的邀请码", submit:"提交",
   secCodes:"网友分享的码", mqHint:"按能用可能性选码展示 · 被标记的不展示 · 按住暂停点选",
   secRecent:"最近发放", recentHint:"最近 7 次发放记录 · 自动滚动",
   secMsg:"留言板", msgPh:"留句话吧（200字内，每IP限一条）", msgBtn:"留言", secFaq:"常见问题",
@@ -446,6 +466,11 @@ function renderFaq(){
   `<details><summary>${f[0]}</summary><div class="a">${f[1]}</div></details>`).join('');
 }
 function renderPrivacy(){$('privacyBody').innerHTML=T('privacyBody')}
+function refreshAskLang(){
+ const bar=$('askBar');
+ if(!readPending()){bar.style.display='none';askShown=false;return}
+ askShown=false;renderAsk();
+}
 function applyLang(l){
  LANG=l;localStorage.setItem('ib-lang',l);
  document.documentElement.lang=(l==='zh'?'zh-CN':'en');
@@ -454,7 +479,9 @@ function applyLang(l){
  document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=T(el.dataset.i18n)});
  document.querySelectorAll('[data-i18n-html]').forEach(el=>{el.innerHTML=T(el.dataset.i18nHtml)});
  document.querySelectorAll('[data-i18n-ph]').forEach(el=>{el.placeholder=T(el.dataset.i18nPh)});
+ $('submitBtn').setAttribute('aria-label',T('submit'));
  renderFaq();
+ refreshAskLang();updateCodeHint();
  if($('privacyView').style.display!=='none')renderPrivacy();
  load();
 }
@@ -566,6 +593,11 @@ $('msgBtn').onclick=async()=>{
  if(!r.ok){toast(d.error||T('tMsgFail'));return}
  toast(T('tMsgOk'));$('msgInput').value='';loadMsgs();
 };
+let tsWidget=null;
+function ensureTurnstile(){
+ if(tsWidget!==null||!window.turnstile)return;
+ try{tsWidget=turnstile.render('#tsSlot',{sitekey:'0x4AAAAAAFF0szN9GPU7gxiw',theme:'light'})}catch{}
+}
 function updateCodeHint(){
  const v=$('codeInput').value.toUpperCase().replace(/\s+/g,'');
  if($('codeInput').value!==v)$('codeInput').value=v;
@@ -575,30 +607,36 @@ function updateCodeHint(){
  const hint=$('codeHint');
  hint.textContent=!v?'':dup?T('dupHint'):ok?T('okHint'):T('fmtHint');
  hint.className='form-hint'+(dup?' bad':ok?' ok':'');
+ if(ok&&!dup)ensureTurnstile();
 }
 $('codeInput').addEventListener('input',updateCodeHint);
+$('codeInput').addEventListener('focus',ensureTurnstile);
 function openSheet(code){$('sheetCode').textContent=code;$('sheetMask').style.display='flex'}
 function closeSheet(){$('sheetMask').style.display='none'}
 $('sheetOk').onclick=closeSheet;
 $('sheetMask').addEventListener('click',e=>{if(e.target.id==='sheetMask')closeSheet()});
 $('copyDrawBtn').onclick=()=>{const c=$('drawCode').textContent;if(/^[A-Z0-9]{6}$/.test(c))copy(c);else toast(T('tDrawFirst'))};
-$('submitBtn').onclick=async()=>{
+async function submitCode(){
  const code=$('codeInput').value.trim().toUpperCase();
  if(!/^[A-Z0-9]{6}$/.test(code)){toast(T('tBadFormat'));return}
- const token=(window.turnstile&&turnstile.getResponse())||'';
+ if(lastCodes.some(c=>c.code===code)){updateCodeHint();return}
+ ensureTurnstile();
+ const token=tsWidget!==null?turnstile.getResponse(tsWidget):'';
  if(!token){toast(T('tNeedHuman'));return}
  const r=await fetch(API+'/api/submit',{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({code,token})});
  const d=await r.json();
- if(window.turnstile)turnstile.reset();
+ if(tsWidget!==null)turnstile.reset(tsWidget);
  if(!r.ok)toast(d.error||T('tSubmitFail'));else{$('codeInput').value='';updateCodeHint();openSheet(code);load()}
-};
+}
+$('shareForm').addEventListener('submit',e=>{e.preventDefault();submitCode()});
 $('langBtn').onclick=()=>applyLang(LANG==='zh'?'en':'zh');
 $('privacyLink').onclick=e=>{e.preventDefault();showPrivacy(true)};
 $('privacyLink2').onclick=e=>{e.preventDefault();showPrivacy(true)};
 $('privacyBack').onclick=()=>showPrivacy(false);
-document.documentElement.lang='en';
+document.documentElement.lang=(LANG==='zh'?'zh-CN':'en');
 document.title=T('docTitle');
 $('langBtn').textContent=T('langBtn');
+$('submitBtn').setAttribute('aria-label',T('submit'));
 document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=T(el.dataset.i18n)});
 document.querySelectorAll('[data-i18n-html]').forEach(el=>{el.innerHTML=T(el.dataset.i18nHtml)});
 document.querySelectorAll('[data-i18n-ph]').forEach(el=>{el.placeholder=T(el.dataset.i18nPh)});
