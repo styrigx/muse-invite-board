@@ -29,18 +29,22 @@ function weightedPick(pool) {
 const OWNER_CODE = "J93R39";
 const OWNER_BOOST = 5; // 站长码权重倍数
 
-const json = (obj, status = 200) =>
-  new Response(JSON.stringify(obj), {
-    status,
-    headers: { "Content-Type": "application/json; charset=utf-8", ...CORS },
-  });
-
-// 允许 Vercel 前端跨域调用
-const CORS = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type",
-};
+// 允许前端域名跨域调用
+const ALLOWED_ORIGINS = [
+  "https://muse-invite.styrigx.com",
+  "https://muse-invite-board.pages.dev",
+];
+function corsFor(req) {
+  const origin = req.headers.get("Origin");
+  return {
+    "Access-Control-Allow-Origin": ALLOWED_ORIGINS.includes(origin)
+      ? origin
+      : ALLOWED_ORIGINS[0],
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+    Vary: "Origin",
+  };
+}
 
 function esc(s) {
   return String(s).replace(/[&<>"']/g, (c) => ({
@@ -176,9 +180,15 @@ async function getRecent(env) {
 
 export default {
   async fetch(req, env) {
+    const cors = corsFor(req); // 允许前端域名跨域调用
+    const json = (obj, status = 200) =>
+      new Response(JSON.stringify(obj), {
+        status,
+        headers: { "Content-Type": "application/json; charset=utf-8", ...cors },
+      });
     try {
     if (req.method === "OPTIONS") {
-      return new Response(null, { status: 204, headers: CORS });
+      return new Response(null, { status: 204, headers: cors });
     }
     const url = new URL(req.url);
     const ip = req.headers.get("cf-connecting-ip") || "unknown";
@@ -321,6 +331,7 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;bac
   radial-gradient(520px 300px at 92% 8%, rgba(168,85,247,.15), transparent 62%),
   radial-gradient(720px 420px at 50% 112%, rgba(56,189,248,.07), transparent 60%)}
 .wrap{max-width:660px;margin:0 auto;padding:20px 16px 70px;position:relative;z-index:1}
+/* ---------- hero ---------- */
 .hero{text-align:center;padding:30px 8px 20px}
 .hero .ticket{font-size:48px;display:inline-block;filter:drop-shadow(0 6px 18px rgba(168,85,247,.45));animation:float 3.4s ease-in-out infinite}
 @keyframes float{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-9px) rotate(5deg)}}
@@ -332,8 +343,10 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;bac
 .stat{flex:1;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 6px;backdrop-filter:blur(8px)}
 .stat b{display:block;font-size:20px;font-weight:800;font-variant-numeric:tabular-nums}
 .stat span{font-size:11.5px;color:var(--dim)}
+/* ---------- panels & cards ---------- */
 .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;margin-top:14px;backdrop-filter:blur(8px)}
 .panel h2{font-size:14px;margin-bottom:14px;color:var(--dim);font-weight:600;letter-spacing:.5px}
+/* 按钮 */
 button{border:0;border-radius:13px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;color:#fff;background:linear-gradient(135deg,var(--acc1),var(--acc2));box-shadow:0 4px 16px rgba(99,102,241,.35);transition:transform .08s,box-shadow .2s}
 button:active{transform:scale(.97)}
 button.ghost{background:rgba(255,255,255,.06);border:1px solid var(--line);box-shadow:none;flex:0 0 auto;padding:14px 18px;font-weight:600}
@@ -342,8 +355,10 @@ button.ghost{background:rgba(255,255,255,.06);border:1px solid var(--line);box-s
 input{flex:1;min-width:0;background:rgba(0,0,0,.3);border:1px solid var(--line);border-radius:13px;padding:14px;color:#fff;font-size:16px;letter-spacing:2px;text-transform:uppercase;font-family:ui-monospace,Menlo,monospace;outline:none;transition:border .2s}
 input:focus{border-color:var(--acc1)}
 input::placeholder{letter-spacing:0;color:var(--dim);font-family:inherit}
+/* 抽码 */
 .draw-code{font-size:42px;font-weight:800;letter-spacing:8px;text-align:center;padding:20px 0 22px;font-family:ui-monospace,Menlo,monospace;color:#fff;text-indent:8px}
 .draw-code:empty::before{content:"??????";color:#3a4560}
+/* 列表 */
 .grid{display:grid;gap:10px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:15px 16px;backdrop-filter:blur(8px)}
 .card .top{display:flex;align-items:center;justify-content:space-between;gap:10px}
@@ -357,12 +372,15 @@ input::placeholder{letter-spacing:0;color:var(--dim);font-family:inherit}
 .card .acts .f{background:rgba(248,113,113,.10);color:var(--bad);border:1px solid rgba(248,113,113,.22)}
 .card .acts button:disabled{opacity:.5}
 .empty{text-align:center;color:var(--dim);padding:32px 0;font-size:14px;line-height:2}
+/* 步骤 */
 .steps{display:flex;gap:8px;margin-top:2px}
 .step{flex:1;text-align:center;font-size:12px;color:var(--dim);line-height:1.7}
 .step .n{display:flex;align-items:center;justify-content:center;width:26px;height:26px;margin:0 auto 8px;border-radius:50%;background:linear-gradient(135deg,var(--acc1),var(--acc2));color:#fff;font-size:13px;font-weight:800}
+/* toast & footer */
 .toast{position:fixed;left:50%;bottom:32px;transform:translateX(-50%);background:#1c2540;border:1px solid var(--line);padding:13px 22px;border-radius:14px;font-size:14px;display:none;z-index:9;max-width:92vw;text-align:center;box-shadow:0 8px 28px rgba(0,0,0,.5)}
 footer{text-align:center;color:var(--dim);font-size:12px;margin-top:26px;line-height:2}
 footer a{color:#a5b4fc;text-decoration:none}
+/* 桌面端微调 */
 @media(min-width:560px){.hero h1{font-size:28px}}
 </style>
 </head>
