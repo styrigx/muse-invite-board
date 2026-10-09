@@ -29,6 +29,11 @@ jobs:
             -H "apikey: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
             -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}"
 
+      - name: 只保留最近 7 天的备份
+        run: |
+          find backups -maxdepth 1 -type f -name 'codes-*.json' -mtime +7 -delete
+          echo "保留备份数: $(ls backups/codes-*.json 2>/dev/null | wc -l)"
+
       - name: 提交备份到仓库
         run: |
           git config user.name "github-actions[bot]"
