@@ -17,17 +17,15 @@ jobs:
         with:
           node-version: '20'
 
+      # Worker 密钥（SUPABASE_ANON_KEY、TURNSTILE_SECRET）只在 Cloudflare 后台维护。
+      # wrangler deploy 不会清除已有密钥，所以这里不重设：
+      # 仓库 Secrets 里没有这些值，`echo "" | wrangler secret put` 会把线上密钥覆盖成空值。
       - name: Deploy Worker
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
-          # 设置 Worker 密钥（幂等，不进代码）
-          echo "${{ secrets.SUPABASE_ANON_KEY }}" | npx -y wrangler secret put SUPABASE_ANON_KEY
-          if [ -n "${{ secrets.TURNSTILE_SECRET }}" ]; then
-            echo "${{ secrets.TURNSTILE_SECRET }}" | npx -y wrangler secret put TURNSTILE_SECRET
-          fi
-          # 部署 Worker（wrangler.toml 已设 workers_dev = false，不会重新打开 workers.dev）
+          # wrangler.toml 已设 workers_dev = false，不会重新打开 workers.dev
           npx -y wrangler deploy
 
       - name: Deploy Web
