@@ -1,0 +1,36 @@
+name: Deploy
+
+# main 有变更就部署 Worker + Web
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Worker 密钥（SUPABASE_ANON_KEY、TURNSTILE_SECRET）只在 Cloudflare 后台维护。
+      # wrangler deploy 不会清除已有密钥，所以这里不重设：
+      # 仓库 Secrets 里没有这些值，`echo "" | wrangler secret put` 会把线上密钥覆盖成空值。
+      - name: Deploy Worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          # wrangler.toml 已设 workers_dev = false，不会重新打开 workers.dev
+          npx -y wrangler deploy
+
+      - name: Deploy Web
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          npx -y wrangler pages deploy web --project-name=muse-invite-web --branch=main --commit-hash=${{ github.sha }}
