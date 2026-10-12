@@ -1,7 +1,7 @@
 // Muse 邀请码自助共享站 — Cloudflare Worker
 // 数据：Supabase (Postgres) via REST；限流：KV
 // AI：Workers AI 每天生成一句推荐语（需绑定变量 AI + Cron Trigger: 0 1 * * *）
-// Env: SUPABASE_URL, SUPABASE_ANON_KEY, INVITE_KV, AI
+// Env: SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY, INVITE_KV, AI
 
 const CODE_RE = /^[A-Z0-9]{6}$/;
 const FLAG_HIDE = 3; // 被标记 3 次后隐藏
@@ -60,6 +60,16 @@ function sbHeaders(env) {
   };
 }
 
+// 留言写入走 service_role key（绕过 RLS）：anon key 是公开的，绝不能用于写入
+function sbWriteHeaders(env) {
+  const key = env.SUPABASE_SERVICE_ROLE_KEY;
+  return {
+    apikey: key,
+    Authorization: "Bearer " + key,
+    "Content-Type": "application/json",
+  };
+}
+
 // 数据全部走 Supabase；KV 只保留做限流
 async function getCodes(env) {
   const r = await fetch(
@@ -111,7 +121,7 @@ async function getMessages(env) {
 async function sbInsertMessage(env, text) {
   const r = await fetch(env.SUPABASE_URL + "/rest/v1/messages", {
     method: "POST",
-    headers: { ...sbHeaders(env), Prefer: "return=minimal" },
+    headers: { ...sbWriteHeaders(env), Prefer: "return=minimal" },
     body: JSON.stringify({ text }),
   });
   if (!r.ok) throw new Error("supabase insert failed: " + r.status);
@@ -227,6 +237,8 @@ export default {
     }
 
     if (req.method === "POST" && url.pathname === "/api/messages") {
+      if (!env.SUPABASE_SERVICE_ROLE_KEY)
+        return json({ error: "留言服务暂不可用" }, 503); // fail closed：缺 key 不退回 anon
       let body;
       try { body = await req.json(); } catch { return json({ error: "请求格式错误" }, 400); }
       const text = String(body.text || "").trim().slice(0, 200);
