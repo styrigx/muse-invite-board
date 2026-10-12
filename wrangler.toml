@@ -1,0 +1,43 @@
+name = "muse-invite-board"
+main = "worker.js"
+compatibility_date = "2026-09-01"
+
+# workers.dev 路由已关闭，不要重新打开
+workers_dev = false
+
+[[kv_namespaces]]
+binding = "INVITE_KV"
+id = "bce7483d358e4e52b23f157594984dca"
+
+[ai]
+binding = "AI"
+
+[triggers]
+crons = ["0 1 * * *"]
+
+# 限流：Workers Rate Limiting（替代 KV 计数）
+# 注意：namespace 需在 Cloudflare 后台 Workers > Rate Limiting 创建，ID 与下方对应
+[[ratelimits]]
+binding = "RL_MSG"
+namespace_id = "1001"
+simple = { limit = 5, period = 86400 }
+
+[[ratelimits]]
+binding = "RL_SUBMIT"
+namespace_id = "1002"
+simple = { limit = 10, period = 86400 }
+
+[[ratelimits]]
+binding = "RL_DRAW"
+namespace_id = "1003"
+simple = { limit = 30, period = 86400 }
+
+[[ratelimits]]
+binding = "RL_VOTE"
+namespace_id = "1004"
+simple = { limit = 30, period = 86400 }
+
+# 明文变量：wrangler deploy 会整体替换 Worker 配置，不写在这里的变量会被清空
+# 密钥（SUPABASE_ANON_KEY、TURNSTILE_SECRET）不进 toml，由 deploy.yml 经 GitHub Secrets 设置
+[vars]
+SUPABASE_URL = "https://lvayxjkndxwmxygkqyvk.supabase.co"
