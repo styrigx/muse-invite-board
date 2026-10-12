@@ -36,7 +36,7 @@ cd web && python3 -m http.server 8000
 npx wrangler dev
 ```
 
-前端默认请求 `https://muse-invite-board.styrigx.workers.dev` 上的 API；本地联调可把 `web/index.html` 里的 `API` 常量改成 `http://localhost:8787`。
+前端默认请求 `https://api.muse-invite.styrigx.com` 上的 API；本地联调可把 `web/index.html` 里的 `API` 常量改成 `http://localhost:8787`。
 
 ## 部署
 
