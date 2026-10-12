@@ -32,7 +32,6 @@ const OWNER_BOOST = 5; // 站长码权重倍数
 // 允许前端域名跨域调用
 const ALLOWED_ORIGINS = [
   "https://muse-invite.styrigx.com",
-  "https://muse-invite-board.pages.dev",
 ];
 function corsFor(req) {
   const origin = req.headers.get("Origin");
