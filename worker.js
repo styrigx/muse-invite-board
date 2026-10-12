@@ -1,7 +1,7 @@
 // Muse 邀请码自助共享站 — Cloudflare Worker
 // 数据：Supabase (Postgres) via REST；限流：KV
 // AI：Workers AI 每天生成一句推荐语（需绑定变量 AI + Cron Trigger: 0 1 * * *）
-// Env: SUPABASE_URL, SUPABASE_ANON_KEY, INVITE_KV, AI
+// Env: SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY, INVITE_KV, AI
 
 const CODE_RE = /^[A-Z0-9]{6}$/;
 const FLAG_HIDE = 3; // 被标记 3 次后隐藏
@@ -53,6 +53,16 @@ function sbHeaders(env) {
   };
 }
 
+// 留言写入走 service_role key（绕过 RLS）：anon key 是公开的，绝不能用于写入
+function sbWriteHeaders(env) {
+  const key = env.SUPABASE_SERVICE_ROLE_KEY;
+  return {
+    apikey: key,
+    Authorization: "Bearer " + key,
+    "Content-Type": "application/json",
+  };
+}
+
 // 数据全部走 Supabase；KV 只保留做限流
 async function getCodes(env) {
   const r = await fetch(
@@ -90,6 +100,24 @@ async function sbPatchCode(env, code, patch) {
     { method: "PATCH", headers: sbHeaders(env), body: JSON.stringify(patch) }
   );
   if (!r.ok) throw new Error("supabase write failed: " + r.status);
+}
+// 留言板：Supabase messages 表，一条一行（替代 KV 单个 JSON 数组的读-改-写）
+async function getMessages(env) {
+  const r = await fetch(
+    env.SUPABASE_URL + "/rest/v1/messages?select=text,created_at&order=created_at.desc&limit=30",
+    { headers: sbHeaders(env) }
+  );
+  if (!r.ok) throw new Error("supabase read failed: " + r.status);
+  const rows = await r.json();
+  return rows.map((m) => ({ text: m.text, ts: new Date(m.created_at).getTime() }));
+}
+async function sbInsertMessage(env, text) {
+  const r = await fetch(env.SUPABASE_URL + "/rest/v1/messages", {
+    method: "POST",
+    headers: { ...sbWriteHeaders(env), Prefer: "return=minimal" },
+    body: JSON.stringify({ text }),
+  });
+  if (!r.ok) throw new Error("supabase insert failed: " + r.status);
 }
 
 // 09-28 编码事故自修复：某次 dashboard 部署把 worker.js 的中文字符串弄成乱码，
@@ -195,17 +223,15 @@ export default {
       });
     }
 
-    // 留言板：KV 存储，每 IP 限一条
+    // 留言板：Supabase messages 表；每 IP 限一条（KV 只做存在性检查）
     if (req.method === "GET" && url.pathname === "/api/messages") {
-      let messages = [];
-      try {
-        const raw = await env.INVITE_KV.get("messages");
-        messages = raw ? JSON.parse(raw) : [];
-      } catch { /* 忽略 */ }
+      const messages = await getMessages(env);
       return json({ messages });
     }
 
     if (req.method === "POST" && url.pathname === "/api/messages") {
+      if (!env.SUPABASE_SERVICE_ROLE_KEY)
+        return json({ error: "留言服务暂不可用" }, 503); // fail closed：缺 key 不退回 anon
       let body;
       try { body = await req.json(); } catch { return json({ error: "请求格式错误" }, 400); }
       const text = String(body.text || "").trim().slice(0, 200);
@@ -214,14 +240,8 @@ export default {
         return json({ error: "今天留太多了，明天再来吧" }, 429);
       if (await env.INVITE_KV.get("msgip:" + ip))
         return json({ error: "每个 IP 只能留一条留言" }, 403);
-      let arr = [];
-      try {
-        const raw = await env.INVITE_KV.get("messages");
-        arr = raw ? JSON.parse(raw) : [];
-      } catch { /* 忽略 */ }
-      arr.unshift({ text, ts: Date.now() });
-      await env.INVITE_KV.put("messages", JSON.stringify(arr.slice(0, 30)));
-      await env.INVITE_KV.put("msgip:" + ip, "1");
+      await sbInsertMessage(env, text);
+      await env.INVITE_KV.put("msgip:" + ip, "1", { expirationTtl: 31536000 }); // 365 天后过期，避免永久残留
       return json({ ok: true });
     }
 
