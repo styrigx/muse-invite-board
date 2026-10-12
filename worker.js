@@ -98,6 +98,24 @@ async function sbPatchCode(env, code, patch) {
   );
   if (!r.ok) throw new Error("supabase write failed: " + r.status);
 }
+// 留言板：Supabase messages 表，一条一行（替代 KV 单个 JSON 数组的读-改-写）
+async function getMessages(env) {
+  const r = await fetch(
+    env.SUPABASE_URL + "/rest/v1/messages?select=text,created_at&order=created_at.desc&limit=30",
+    { headers: sbHeaders(env) }
+  );
+  if (!r.ok) throw new Error("supabase read failed: " + r.status);
+  const rows = await r.json();
+  return rows.map((m) => ({ text: m.text, ts: new Date(m.created_at).getTime() }));
+}
+async function sbInsertMessage(env, text) {
+  const r = await fetch(env.SUPABASE_URL + "/rest/v1/messages", {
+    method: "POST",
+    headers: { ...sbHeaders(env), Prefer: "return=minimal" },
+    body: JSON.stringify({ text }),
+  });
+  if (!r.ok) throw new Error("supabase insert failed: " + r.status);
+}
 
 // 09-28 编码事故自修复：某次 dashboard 部署把 worker.js 的中文字符串弄成乱码，
 // 导致 09-28 18:00 后提交的码 by 字段为乱码。这里幂等地修复，修完即空转。
@@ -202,13 +220,9 @@ export default {
       });
     }
 
-    // 留言板：KV 存储，每 IP 限一条
+    // 留言板：Supabase messages 表；每 IP 限一条（KV 只做存在性检查）
     if (req.method === "GET" && url.pathname === "/api/messages") {
-      let messages = [];
-      try {
-        const raw = await env.INVITE_KV.get("messages");
-        messages = raw ? JSON.parse(raw) : [];
-      } catch { /* 忽略 */ }
+      const messages = await getMessages(env);
       return json({ messages });
     }
 
@@ -221,13 +235,7 @@ export default {
         return json({ error: "今天留太多了，明天再来吧" }, 429);
       if (await env.INVITE_KV.get("msgip:" + ip))
         return json({ error: "每个 IP 只能留一条留言" }, 403);
-      let arr = [];
-      try {
-        const raw = await env.INVITE_KV.get("messages");
-        arr = raw ? JSON.parse(raw) : [];
-      } catch { /* 忽略 */ }
-      arr.unshift({ text, ts: Date.now() });
-      await env.INVITE_KV.put("messages", JSON.stringify(arr.slice(0, 30)));
+      await sbInsertMessage(env, text);
       await env.INVITE_KV.put("msgip:" + ip, "1");
       return json({ ok: true });
     }
