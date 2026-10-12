@@ -13,8 +13,8 @@
 <meta name="twitter:title" content="Muse Invite Code Board">
 <meta name="twitter:description" content="Take one, leave one. One invite code = 1 billion Muse tokens, free to claim.">
 <meta name="twitter:image" content="https://muse-invite.styrigx.com/og-image.png">
-<link rel="dns-prefetch" href="https://muse-invite-board.styrigx.workers.dev">
-<link rel="preconnect" href="https://muse-invite-board.styrigx.workers.dev">
+<link rel="dns-prefetch" href="https://api.muse-invite.styrigx.com">
+<link rel="preconnect" href="https://api.muse-invite.styrigx.com">
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 <style>
 :root{
@@ -312,7 +312,7 @@ footer a{color:var(--ink);text-decoration:underline;text-underline-offset:3px;cu
 <div class="toast" id="toast"></div>
 
 <script>
-const API="https://muse-invite-board.styrigx.workers.dev";
+const API="https://api.muse-invite.styrigx.com";
 const $=id=>document.getElementById(id);
 let LANG=localStorage.getItem('ib-lang')||'en';
 let lastCodes=[];
