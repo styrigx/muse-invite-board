@@ -7,3 +7,4 @@
 
 DROP POLICY IF EXISTS "messages_insert_public" ON messages;
 REVOKE INSERT, UPDATE, DELETE ON messages FROM anon, authenticated;
+REVOKE TRUNCATE, REFERENCES, TRIGGER ON messages FROM anon, authenticated;
