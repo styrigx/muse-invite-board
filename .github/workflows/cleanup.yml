@@ -22,6 +22,13 @@ jobs:
             -o "backups/codes-$(date +%F).json"
           echo "备份完成，行数: $(jq length "backups/codes-$(date +%F).json")"
 
+      - name: Supabase 保活（轻量查询，防免费项目暂停）
+        run: |
+          curl -s -o /dev/null -w "HTTP %{http_code}\n" \
+            "${{ secrets.SUPABASE_URL }}/rest/v1/codes?select=id&limit=1" \
+            -H "apikey: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}"
+
       - name: 清理被标记 3 次的失效码（跳过站长码 J93R39）
         run: |
           curl -s -o /dev/null -w "HTTP %{http_code}\n" -X DELETE \
