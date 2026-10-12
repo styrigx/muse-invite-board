@@ -124,10 +124,19 @@ async function refreshTagline(env) {
   } catch (e) { /* 下次再试 */ }
 }
 
-// 限流：Workers Rate Limiting 绑定（KV 免费版每天限 1000 次写入，计数器放 KV 很快用完）
+// 简易限流：每个 IP 每 action 在 windowSec 内最多 max 次（KV 日限，用于量小的 submit/msg）
+async function checkLimitKV(env, ip, action, max, windowSec) {
+  const key = `rl:${action}:${ip}`;
+  const n = parseInt((await env.INVITE_KV.get(key)) || "0", 10);
+  if (n >= max) return false;
+  await env.INVITE_KV.put(key, String(n + 1), { expirationTtl: windowSec });
+  return true;
+}
+
+// 限流：Workers Rate Limiting 绑定（每分钟防刷，用于量大的 draw/vote）
 // 每个 action 独立绑定，限额配在 wrangler.toml；binding 未配置或故障时放行，避免误伤正常用户
-const RL_BINDINGS = { msg: "RL_MSG", submit: "RL_SUBMIT", draw: "RL_DRAW", vote: "RL_VOTE" };
-async function checkLimit(env, ip, action) {
+const RL_BINDINGS = { draw: "RL_DRAW", vote: "RL_VOTE" };
+async function checkLimitRL(env, ip, action) {
   const limiter = env[RL_BINDINGS[action]];
   if (!limiter) return true;
   try {
@@ -222,7 +231,7 @@ export default {
       try { body = await req.json(); } catch { return json({ error: "请求格式错误" }, 400); }
       const text = String(body.text || "").trim().slice(0, 200);
       if (text.length < 2) return json({ error: "留言太短了，多写几个字吧" }, 400);
-      if (!(await checkLimit(env, ip, "msg")))
+      if (!(await checkLimitKV(env, ip, "msg", 5, 86400)))
         return json({ error: "今天留太多了，明天再来吧" }, 429);
       if (await env.INVITE_KV.get("msgip:" + ip))
         return json({ error: "每个 IP 只能留一条留言" }, 403);
@@ -246,7 +255,7 @@ export default {
       if (!token) return json({ error: "请先完成人机验证" }, 403);
       if (!(await verifyTurnstile(env, token, ip)))
         return json({ error: "人机验证未通过，请重试" }, 403);
-      if (!(await checkLimit(env, ip, "submit")))
+      if (!(await checkLimitKV(env, ip, "submit", 10, 86400)))
         return json({ error: "今天贡献太多了，明天再来吧" }, 429);
       const st = await sbInsertCode(env, code);
       if (st === 409) return json({ error: "这个邀请码已经在板子上了" }, 409);
@@ -256,8 +265,8 @@ export default {
     }
 
     if (req.method === "POST" && url.pathname === "/api/draw") {
-      if (!(await checkLimit(env, ip, "draw")))
-        return json({ error: "今天抽太多了，明天再来吧" }, 429);
+      if (!(await checkLimitRL(env, ip, "draw")))
+        return json({ error: "抽太快了，稍后再来吧" }, 429);
       const codes = await ensureOwnerCode(env);
       // 抽取池：只排除隐藏（3 次标记）的码；被标记的码仅撤下展示，仍可被抽到
       const pool = codes.filter((c) => c.flags < FLAG_HIDE);
@@ -274,8 +283,8 @@ export default {
       const code = String(body.code || "").trim().toUpperCase();
       const kind = body.kind;
       if (kind !== "works" && kind !== "flag") return json({ error: "参数错误" }, 400);
-      if (!(await checkLimit(env, ip, "vote")))
-        return json({ error: "今天点太多了，明天再来吧" }, 429);
+      if (!(await checkLimitRL(env, ip, "vote")))
+        return json({ error: "点太快了，稍后再来吧" }, 429);
       const codes = await getCodes(env);
       const item = codes.find((c) => c.code === code);
       if (!item) return json({ error: "找不到这个邀请码" }, 404);
