@@ -1,0 +1,21 @@
+name = "muse-invite-board"
+main = "worker.js"
+compatibility_date = "2026-09-01"
+
+# workers.dev 路由已关闭，不要重新打开
+workers_dev = false
+
+[[kv_namespaces]]
+binding = "INVITE_KV"
+id = "bce7483d358e4e52b23f157594984dca"
+
+[ai]
+binding = "AI"
+
+[triggers]
+crons = ["0 1 * * *"]
+
+# 明文变量：wrangler deploy 会整体替换 Worker 配置，不写在这里的变量会被清空
+# 密钥（SUPABASE_ANON_KEY、TURNSTILE_SECRET）不进 toml，由 deploy.yml 经 GitHub Secrets 设置
+[vars]
+SUPABASE_URL = "https://lvayxjkndxwmxygkqyvk.supabase.co"
