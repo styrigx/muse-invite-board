@@ -236,7 +236,7 @@ export default {
       if (await env.INVITE_KV.get("msgip:" + ip))
         return json({ error: "每个 IP 只能留一条留言" }, 403);
       await sbInsertMessage(env, text);
-      await env.INVITE_KV.put("msgip:" + ip, "1");
+      await env.INVITE_KV.put("msgip:" + ip, "1", { expirationTtl: 31536000 }); // 365 天后过期，避免永久残留
       return json({ ok: true });
     }
 
