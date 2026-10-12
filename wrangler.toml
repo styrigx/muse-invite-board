@@ -16,6 +16,6 @@ binding = "AI"
 crons = ["0 1 * * *"]
 
 # 明文变量：wrangler deploy 会整体替换 Worker 配置，不写在这里的变量会被清空
-# 密钥（SUPABASE_ANON_KEY、TURNSTILE_SECRET）不进 toml，由 deploy.yml 经 GitHub Secrets 设置
+# 密钥（SUPABASE_ANON_KEY、TURNSTILE_SECRET）不进 toml，只在 Cloudflare 后台维护
 [vars]
 SUPABASE_URL = "https://lvayxjkndxwmxygkqyvk.supabase.co"
