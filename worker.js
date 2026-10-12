@@ -123,7 +123,7 @@ async function refreshTagline(env) {
   } catch (e) { /* 下次再试 */ }
 }
 
-// 简易限流：每个 IP 每 action 在 windowSec 内最多 max 次（KV 日限，用于量小的 submit/msg）
+// 简易限流：每个 IP 每 action 在 windowSec 内最多 max 次（KV 日限：submit/msg 专用；draw/vote 与每分钟限速叠加）
 async function checkLimitKV(env, ip, action, max, windowSec) {
   const key = `rl:${action}:${ip}`;
   const n = parseInt((await env.INVITE_KV.get(key)) || "0", 10);
@@ -266,6 +266,8 @@ export default {
     if (req.method === "POST" && url.pathname === "/api/draw") {
       if (!(await checkLimitRL(env, ip, "draw")))
         return json({ error: "抽太快了，稍后再来吧" }, 429);
+      if (!(await checkLimitKV(env, ip, "draw", 30, 86400)))
+        return json({ error: "今天抽太多了，明天再来吧" }, 429);
       const codes = await ensureOwnerCode(env);
       // 抽取池：只排除隐藏（3 次标记）的码；被标记的码仅撤下展示，仍可被抽到
       const pool = codes.filter((c) => c.flags < FLAG_HIDE);
@@ -284,6 +286,8 @@ export default {
       if (kind !== "works" && kind !== "flag") return json({ error: "参数错误" }, 400);
       if (!(await checkLimitRL(env, ip, "vote")))
         return json({ error: "点太快了，稍后再来吧" }, 429);
+      if (!(await checkLimitKV(env, ip, "vote", 30, 86400)))
+        return json({ error: "今天点太多了，明天再来吧" }, 429);
       const codes = await getCodes(env);
       const item = codes.find((c) => c.code === code);
       if (!item) return json({ error: "找不到这个邀请码" }, 404);
