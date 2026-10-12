@@ -15,7 +15,12 @@ binding = "AI"
 [triggers]
 crons = ["0 1 * * *"]
 
-# 限流：Workers Rate Limiting（每分钟防刷，只给量大的 draw/vote；submit/msg 量小沿用 KV 日限）
+# 明文变量：wrangler deploy 会整体替换 Worker 配置，不写在这里的变量会被清空
+# 密钥（SUPABASE_ANON_KEY、TURNSTILE_SECRET）不进 toml，只在 Cloudflare 后台维护
+[vars]
+SUPABASE_URL = "https://lvayxjkndxwmxygkqyvk.supabase.co"
+
+# 每分钟防刷（Workers Rate Limiting）：draw/vote 量大走 RL；submit/msg 量小保留 KV 日限
 [[ratelimits]]
 name = "RL_DRAW"
 namespace_id = "1001"
@@ -25,8 +30,3 @@ simple = { limit = 5, period = 60 }
 name = "RL_VOTE"
 namespace_id = "1002"
 simple = { limit = 10, period = 60 }
-
-# 明文变量：wrangler deploy 会整体替换 Worker 配置，不写在这里的变量会被清空
-# 密钥（SUPABASE_ANON_KEY、TURNSTILE_SECRET）不进 toml，由 deploy.yml 经 GitHub Secrets 设置
-[vars]
-SUPABASE_URL = "https://lvayxjkndxwmxygkqyvk.supabase.co"
